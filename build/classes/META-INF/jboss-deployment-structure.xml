@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-deployment-structure >
+<deployment>
+  <!--  <exclusions>
+            <module name="org.mapir:main"  />
+
+        </exclusions> -->  
+<dependencies>
+	<module name="com.google.guava" export="true"/>
+	<module name= "io.netty"/>	
+	<module name="javax.annotation.api" export="true"/>
+	<module name="javax.ejb.api" export="true"/>
+	<module name="javax.interceptor.api" export="true"/>
+	<module name="javax.jms.api" export="true"/>
+	<module name="javax.jws.api" export="true"/>
+	<module name="javax.mail.api" export="true"/>
+	<module name="javax.xml.bind.api"  export="true"/>
+	<module name="org.hornetq.client"  export="true"/>
+	<module name="org.jboss.ejb3"  export="true"/>	
+	<module name="com.st.cliente-svrtn" export="true"/>	
+	<module name= "org.jboss.log4j.logmanager"/>
+	<module name="com.thoughtworks.xstream"/>
+	<module name = "org.quartz"/>
+	<module name = "org.wildfly.naming" export ="true"/>  
+	<module name = "com.sun.xml.messaging.saaj"/>  
+	<!-- <module name = "deployment.conexionBase2.0.jar" meta-inf="import"/> -->
+	<module name = "deployment.conexionBase2.0.jar" export ="true"/>
+	<module name = "javax.inject.api" export = "true"/>
+</dependencies>
+</deployment>
+</jboss-deployment-structure>
