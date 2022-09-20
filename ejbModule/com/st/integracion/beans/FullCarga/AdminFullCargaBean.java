@@ -255,7 +255,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				addReverso(trn, new Date(), 1, Conn);
 			}
 
-			else if (codigoEstadoConexion == 1) { //que transaccion hago
+			else if (codigoEstadoConexion == 1) { // que transaccion hago
 				tipoOperacion = TipoOperacion.RECARGA;
 				codigoEstado = 7;// Recibida del MDB para proceso de recarga
 				codigoProceso = 9;// Recibida del MDB para proceso de recarga
@@ -277,9 +277,9 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				String nuevoXmlIn = "";// +"SEPARADORST"+pagoTransaccion;
 
 				trn.setParametrosXmlInTransaccion(nuevoXmlIn);
-				//ParametrosRespuesta
+				// ParametrosRespuesta
 				String parametrosrespuesta = Utilitaria.obtenerHijoXml(mvmParametroXmlIn, "ParametrosRespuesta");
-				//ConsultaTransaccion
+				// ConsultaTransaccion
 				String consultatransaccion = Utilitaria.obtenerHijoXml(mvmParametroXmlIn, "ConsultaTransaccion");
 				// InfoEmpresa
 				Node sasInfoEmpresa = root.getElementsByTagName("InfoEmpresa").item(0);
@@ -292,8 +292,8 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				// trn.setFechaColaPeticion(fechaRecibidaColaPeticion);
 
 				this.odatos.insertarTransaccional(Conn, codigoMovimiento, numTransaccion, fecha,
-						trn.getFechaColaPeticionRecarga(), descripcion, codigoCliente, codigoUsuario,
-						valorContable, referenciaCliente, mvmParametroXmlIn, identificadorHost, referenciaProveedor,
+						trn.getFechaColaPeticionRecarga(), descripcion, codigoCliente, codigoUsuario, valorContable,
+						referenciaCliente, mvmParametroXmlIn, identificadorHost, referenciaProveedor,
 						mvmParametroXmlOut, codigoBodega, codigoProveedorProducto, codigoEstado, codigoProceso);
 
 				descripcionM = "AdminFullCargaBean-TransaccionRecibida: La transaccion numero :"
@@ -1150,7 +1150,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			}
 			log.info("CltMovimiento  a responder =" + mvmNuevo.toString());
 
-			// enviarMensajeWebServiceRespuesta(mvmNuevo);
+			enviarMensajeWebServiceRespuesta(mvmNuevo);
 
 			log.info("idMensajeProveedor = " + idMensajeProveedor);
 			/*
@@ -1402,55 +1402,37 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		descripcion = "AdminInteraguaBean-respuestaRecibidaRecarga: Inicio";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		try {
-			/*
-			 * trn = this.utl.procesarRespuesta(trn);
-			 * 
-			 * Date fechaRespuestaRecarga = trn.getFechaRespuestaRecarga(); int codigoEstado
-			 * = trn.getCodigoEstado(); int codigoProceso = trn.getCodigoProceso(); Long
-			 * codigoMovimiento = trn.getCodigoMovimiento(); Long numeroTransaccion =
-			 * trn.getNumTransaccion(); Long transacId = trn.getTransacId(); String
-			 * referenciaProveedor = trn.getReferenciaProveedor(); String
-			 * codigoErrorRsp=trn.getCodigoRsp(); String
-			 * descripcionErrorRsp=trn.getDescripcionErrorRsp(); //setDescripcionErrorRsp
-			 * 
-			 * String rucBanco = trn.getSalPgoRucBancoRsp(); String localidad =
-			 * trn.getSalPgoLocalidadRsp(); String puntoVenta =
-			 * trn.getSalPgoPuntoVentaRsp(); String secuencial =
-			 * trn.getSalPgoSecuencialRsp(); String autorizacionSRI =
-			 * trn.getSalPgoAutorizacionSRIRsp(); String direccionBanco =
-			 * trn.getSalPgoDireccionBancoRsp(); String fechaVigenciaSri =
-			 * trn.getSalPgoFechaVigenciaSriRsp(); String fechaInicioSRI =
-			 * trn.getSalPgoFechaInicioSRIRsp(); String fechaResolucionSRI =
-			 * trn.getSalPgoFechaResolucionSRIRsp(); String fecha_Proceso =
-			 * trn.getSalPgoFecha_ProcesoRsp(); String codigo_Retorno =
-			 * trn.getSalPgoCodigo_RetornoRsp(); String descripcion_Retorno =
-			 * trn.getSalPgoDescripcion_RetornoRsp(); String secuencial_Banco =
-			 * trn.getDatTrnSecuencial_Banco_ComisionRsp(); String secuencial_Banco_Comision
-			 * = trn.getDatTrnSecuencial_Banco_ComisionRsp(); String codigo_Tercero =
-			 * trn.getDatTrnCodigo_TerceroRsp();
-			 * 
-			 * Conn = postgresInteraguaXADS.getConnection();
-			 * 
-			 * odatos.actualizarTransaccionalDetalleRespuesta(Conn, rucBanco, localidad,
-			 * puntoVenta, secuencial, autorizacionSRI, direccionBanco, fechaVigenciaSri,
-			 * fechaInicioSRI, fechaResolucionSRI, fecha_Proceso, codigoErrorRsp,
-			 * descripcion_Retorno, secuencial_Banco, secuencial_Banco_Comision,
-			 * codigo_Tercero, fechaRespuestaRecarga, numeroTransaccion, codigoMovimiento,
-			 * transacId);
-			 * 
-			 * odatos.actualizarTransaccionalRespuesta(Conn, codigoEstado, codigoProceso,
-			 * fechaRespuestaRecarga, referenciaProveedor, descripcion_Retorno,
-			 * numeroTransaccion, codigoMovimiento, transacId);
-			 * 
-			 * descripcion =
-			 * "AdminInteraguaBean-respuestaRecibidaRecarga; actualizando transaccional y actualizando detalle | Codigo Movimiento: "
-			 * +trn.getCodigoMovimiento() +" Numero Serie : "+ trn.getReferenciaCliente();
-			 * AdminInteraguaBean.log.info(trn + descripcion); responderCola(trn); //} }
-			 * catch(SQLException e) { descripcion =
-			 * "SQLException-AdminInteraguaBean-respuestaRecibidaRecarga: actualizando transaccional y actualizando detalle"
-			 * ; AdminInteraguaBean.log.info(trn + descripcion); e.printStackTrace();
-			 * context.setRollbackOnly(); throw new TransaccionException(e);
-			 */
+
+			trn = this.utl.procesarRespuesta(trn);
+
+			Conn = postgresTrbXADS.getConnection();
+
+			String mensajeProveedor = trn.getCodigoRetorno();
+
+			int codigoEstado = trn.getCodigoEstado();
+			int codigoProceso = trn.getCodigoProceso();
+			Date fechaRespuestaRecarga = trn.getFechaRespuestaRecarga();
+			String referenciaProveedor = trn.getReferenciaProveedor();
+			String codigoRetorno = trn.getCodigoRetorno();
+			String mensajeRetorno = trn.getMensajeRetorno();
+			Long codigoMovimiento = trn.getCodigoMovimiento();
+			Long numeroTransaccion = trn.getNumTransaccion();
+			Long transacId = trn.getTransacId();
+			String tramaEnvio = trn.getTramaTxRequerimiento(), tramaResp = trn.getTramaTxRespuesta(),
+					tramaTipoPrd = trn.getTipoProductoStr();
+			String etapaTransaccion = "TX";
+
+			odatos.actualizarTransaccionalRespuesta(Conn, codigoEstado, codigoProceso, fechaRespuestaRecarga,
+					referenciaProveedor, mensajeRetorno, numeroTransaccion, codigoMovimiento, transacId, codigoRetorno);
+
+			odatos.actualizarTransaccionalDetalleRespuesta(Conn, numeroTransaccion, codigoMovimiento, transacId,
+					codigoRetorno, mensajeRetorno, tramaEnvio, tramaResp, tramaTipoPrd);
+
+			descripcion = "AdminFullCargaBean-respuestaRecibidaRecarga; actualizando transaccional y actualizando detalle | Codigo Movimiento: "
+					+ trn.getCodigoMovimiento() + " Numero Serie : " + trn.getReferenciaCliente();
+			AdminFullCargaBean.log.info(trn + descripcion);
+			responderCola(trn);
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			descripcion = "Exception-AdminInteraguaBean-respuestaRecibidaRecarga: actualizando transaccional y actualizando detalle";

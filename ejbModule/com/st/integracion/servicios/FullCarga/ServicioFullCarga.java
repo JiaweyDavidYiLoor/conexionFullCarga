@@ -537,6 +537,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 						
 						break;
 					case RECARGA:
+						//podria haber validacion
 						//cambio 09/15
 						//tx.setNumeroTelefono(tx.getReferenciaCliente());
 						//tx.setImporte(tx.getValorContable());

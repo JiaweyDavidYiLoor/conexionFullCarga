@@ -65,10 +65,9 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
     private String valorRecibido;
     
     private String tipoProductoStr;
-    //cambios 15/09
-    private String numeroTelefono;
-    private BigDecimal importe ;
-    //cambios 15/09
+    
+    private String referenciaSigma;
+   
     
 	@Override
 	public int compareTo(TransaccionFullCarga that) {
@@ -183,31 +182,11 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
 	    tx.setTrxAtm(this.getTrxAtm());
 	    tx.setValorRecibido(this.getValorRecibido());
 	    tx.setTipoProducto(this.getTipoProducto());
-	    //cambios 15/09
-	    tx.setNumeroTelefono(this.getNumeroTelefono());
-	    tx.setImporte(this.getImporte());
-	    //cambios 15/09
+	    tx.setReferenciaSigma(this.getReferenciaSigma());
 		return tx;
 	}
     
-    //cambio 15/09
-    public String getNumeroTelefono() {
-    	return numeroTelefono;
-    }
-    
-    public BigDecimal getImporte() {
-    	return importe;
-    }
-    //cambio 15/09 
-    public void setNumeroTelefono(String numeroTelefono) {
-		this.numeroTelefono = numeroTelefono;
-	}
-
-
-	public void setImporte(BigDecimal importe) {
-		this.importe = importe;
-	}
-	//cambio 15/09 
+  
 	public String getTipoProductoStr() {
 		return tipoProductoStr;
 	}
@@ -532,7 +511,19 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
 	public void setTipoProducto(TipoProducto tipoProducto) {
 		this.tipoProducto = tipoProducto;
 	}
+	
+	
 
+	public String getReferenciaSigma() {
+		return referenciaSigma;
+	}
+
+
+	public void setReferenciaSigma(String referenciaSigma) {
+		this.referenciaSigma = referenciaSigma;
+	}
+	
+	
 		
 	
 }

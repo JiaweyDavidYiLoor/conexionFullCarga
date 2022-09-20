@@ -449,7 +449,7 @@ public class Datos {
 		"cnx_det_codigo_retorno = ? ," +				//1
 		"cnx_det_mensaje_retorno = ? ," +				//2
 		"cnx_det_trama_requerimiento = ?, " +					//3
-		"cnx_det_trama_respùesta = ?, " +					//4
+		"cnx_det_trama_respÃ¹esta = ?, " +					//4
 		"cnx_det_tipo_producto = ? " +	 //5
 		"WHERE " +	
 		"(cnx_det_num_transaccion = ?) AND " +  		//6

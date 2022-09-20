@@ -72,6 +72,13 @@ public class ClaroTrbListener extends TimerTask implements ClaroChannelListener,
 			{
 				this.tx.setFechaRespuestaAnulacionCompraPinInternet(new Date());
 				log.info("TxInteraguaListener-anulacionRespondida: " + this.tx+descripcion);
+			}
+			//cambio 19/09/2022
+			else if(this.tx.getTipoOperacion().compareTo(TipoOperacion.RECARGA)==0)
+			{
+				this.tx.setFechaRespuestaRecarga(new Date());
+				//this.tx.setReferenciaProveedor(respuesta.getReferenciaSigma());
+				log.info("TxInteraguaListener-recarga-respondida: " + this.tx+descripcion);
 			}	
 				
 				this.tx.setCodigoRetorno(respuesta.getCodigoRetorno());

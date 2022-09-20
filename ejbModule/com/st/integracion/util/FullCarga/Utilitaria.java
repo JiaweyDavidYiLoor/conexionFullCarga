@@ -72,7 +72,7 @@ import com.st.integracion.ws.FullCarga.ParametrosRespuesta;
 
 public class Utilitaria {
 	
-	private static final String ORIGINAL= "ÁáÉéÍíÓóÚúÑñÜü"; 
+	private static final String ORIGINAL= "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"; 
     private static final String REPLACEMENT= "AaEeIiOoUuNnUu";
 	
 	private static final Logger log=Logger.getLogger(Utilitaria.class);
@@ -89,7 +89,9 @@ public class Utilitaria {
 		else if(tipoOperacion.compareTo(TipoOperacion.ANULACION_CMP_PIN_INTERNET)==0)
 		{
 			retorno = procesarRespuestaAnulacion(trn);
-		}	
+		}else if (tipoOperacion.compareTo(TipoOperacion.RECARGA)==0) {
+			retorno = procesarRespuestaRecarga(trn);
+		}
 		return retorno;
 	} 
 	
@@ -104,7 +106,7 @@ private TransaccionFullCarga procesarRespuestaComprarPinInternet (TransaccionFul
 				   trn.setCodigoProceso(62);// Respuesta Compra Pin Internet			
 				  // trn.setReferenciaProveedor(trn.getCuponPagado());
 				   /*Agregando el campo <ext> al xml de respuesta */
-			      //trn.setDescripcion("Transacción exitosa");
+			      //trn.setDescripcion("Transacciï¿½n exitosa");
 			      trn.setEstadoFK(3L);
 
 			}
@@ -133,7 +135,47 @@ private TransaccionFullCarga procesarRespuestaComprarPinInternet (TransaccionFul
 		return retorno;
 
 	}
-	
+private TransaccionFullCarga procesarRespuestaRecarga (TransaccionFullCarga trn)
+{
+	TransaccionFullCarga retorno = null;		
+	String codigoErrorRespuesta = trn.getCodigoRetorno();//trn.getCodigoRsp();
+					
+		if(codigoErrorRespuesta.compareTo("00")==0)
+		{				
+		       trn.setCodigoEstado(2);	//Recarga realizada
+			   trn.setCodigoProceso(2);// Recarga respondida			
+			   //trn.setReferenciaProveedor(trn.getReferenciaSigma());
+			   /*Agregando el campo <ext> al xml de respuesta */
+		      //trn.setDescripcion("Transacciï¿½n exitosa");
+		      trn.setEstadoFK(2L);
+
+		}
+		/*else if(codigoErrorRespuesta.compareTo("TRMALFOR")==0)
+		{
+			trn.setCodigoEstado(71);	//Compra de pin de internet pendiente
+			trn.setCodigoProceso(61);// Respuesta Compra Pin Internet pendiente
+           // trn.setReferenciaProveedor("NAK");
+			
+			trn.setDescripcion(trn.getMensajeRetorno());
+		    //trn.setCodigoProceso(62);// Respuesta compra de pin internet
+			//trn.setCodigoEstado(73);//Compra de pin de internet no realizada	
+			trn.setEstadoFK(1L);
+		}*/
+		else 
+		{
+			trn.setReferenciaProveedor("NAK");
+			
+			trn.setDescripcion(trn.getMensajeRetorno());
+		    trn.setCodigoProceso(3);// Respuesta compra de pin internet
+			trn.setCodigoEstado(3);//Compra de pin de internet no realizada	
+			trn.setEstadoFK(3L);
+		
+	}
+	retorno = trn;
+	return retorno;
+
+}
+
 	private TransaccionFullCarga procesarRespuestaAnulacion (TransaccionFullCarga trn)
 	{
 		
@@ -746,7 +788,7 @@ private TransaccionFullCarga procesarRespuestaComprarPinInternet (TransaccionFul
 		message.addRecipients(Message.RecipientType.TO,addressr);
 		message.addRecipients(Message.RecipientType.CC,addressrCC);
 				
-		//message.setSubject("Transaccion Dexpago "+ producto  +"Nº =" +tx.getReferenciaCliente() +", realizar Anulacion " );
+		//message.setSubject("Transaccion Dexpago "+ producto  +"Nï¿½ =" +tx.getReferenciaCliente() +", realizar Anulacion " );
 		message.setSubject( tituloCorreo);
 		message.setText(mensaje);
 
