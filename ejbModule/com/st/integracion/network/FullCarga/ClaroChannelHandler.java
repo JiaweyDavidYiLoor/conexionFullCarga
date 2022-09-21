@@ -136,7 +136,7 @@ public class ClaroChannelHandler extends SimpleChannelInboundHandler<FullHttpRes
 			tx.setDescripcion(tipoRespuesta);
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setFechaRespuestaRecarga(new Date());
-			tx.setReferenciaProveedor(String.valueOf(respuestaProveedor.getReferenciaSigma()));
+			tx.setReferenciaSigma(Integer.toString(respuestaProveedor.getReferenciaSigma()));
 		} else if (tipoRespuesta.compareTo("Reverso Realizado Correctamente.") == 0) {
 			tx.setTipoOperacion(TipoOperacion.ANULACION_CMP_PIN_INTERNET);
 			tx.setMensajeRetorno("");
