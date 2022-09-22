@@ -15,9 +15,9 @@ public class EmpresaClienteRoll {
 	
 	public  EmpresaClienteRoll( ) {};
 	
-	public EmpresaClienteRoll(VariablesFullCargaLocal varClaroLocal)
+	public EmpresaClienteRoll(VariablesFullCargaLocal varFullCargaLocal)
 	{
-		this.listaEmpresaClienteRoll = varClaroLocal.getListaEmpresaClienteRoll();
+		this.listaEmpresaClienteRoll = varFullCargaLocal.getListaEmpresaClienteRoll();
 	}
 	
 	public long getCodigo() {

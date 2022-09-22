@@ -32,17 +32,17 @@ public class TicketPrint
 	String xmlIn;
 	TransaccionFullCarga tx = new TransaccionFullCarga(); 
 	
-	String leyendaResolucion = "De acuerdo a resolución No. NAC-DGERCG12-00105 del SRI publicada en "+
+	String leyendaResolucion = "De acuerdo a resoluciï¿½n No. NAC-DGERCG12-00105 del SRI publicada en "+
 	"Registro Oficial No.666 las instituciones financieras tienen la obligatoriedad de emitir los comprobantes "+
-	"de ventas, retención y documentos complementarios únicamente a través de mensaje de datos y firmados "+
-	"Electrónicamente. El Banco pone a su disposición en su portal web, la opción de consulta documento Tributarios."+
-	"*Para no clientes: www.bancodelpacifico.com. Ingrese su identificación y el número que consta en el documento "+
+	"de ventas, retenciï¿½n y documentos complementarios ï¿½nicamente a travï¿½s de mensaje de datos y firmados "+
+	"Electrï¿½nicamente. El Banco pone a su disposiciï¿½n en su portal web, la opciï¿½n de consulta documento Tributarios."+
+	"*Para no clientes: www.bancodelpacifico.com. Ingrese su identificaciï¿½n y el nï¿½mero que consta en el documento "+
 	"transaccional, seleccione el tipo de documento tributario que se desea imprimir y respaldar.";
 	
-	String leyendaEtapa ="Este comprobante no es válido para efectos tributarios. El usuario dispone que ETAPA EP mantenga en custodia su comp de venta hasta que este sea retirado en la Empresa (Cláusula 5ta)";
+	String leyendaEtapa ="Este comprobante no es vï¿½lido para efectos tributarios. El usuario dispone que ETAPA EP mantenga en custodia su comp de venta hasta que este sea retirado en la Empresa (Clï¿½usula 5ta)";
 	
 	
-	String leyendaDepositoBAncario = "Este comprobante de transacción no es negociabe, ni transferible, ni puede ser objeto de ningún tipo de comercialización o negociación por parte de su tenedor"; 
+	String leyendaDepositoBAncario = "Este comprobante de transacciï¿½n no es negociabe, ni transferible, ni puede ser objeto de ningï¿½n tipo de comercializaciï¿½n o negociaciï¿½n por parte de su tenedor"; 
 	public TicketPrint(Producto prd, String xmlIn, TransaccionFullCarga trn)
 	{
 		this.producto =prd;
@@ -74,16 +74,13 @@ public class TicketPrint
 		}
 		
 		Double comision=0.0, ivaLocal=0.12, valorPagado=tx.getValorContable().doubleValue();
-		
-		
-		//DatosConfiguracionWsdl datosConexionWsdl = mapDatosConexWsdl.get(datosConf.getDatosConexionWsdlFk());		
+			
 	    ArrayList listaTicketComprobanteFac = new ArrayList<String>();
 
-		listaTicketComprobanteFac.add("CFULL CARGA"); //C: CENTRADO - D: DER, I:IZ, &D: I<>D
-		//listaTicketComprobanteFac.add("CGUAYAQUIL-PRINCIPAL");
+		listaTicketComprobanteFac.add("CFULL CARGA");
 		listaTicketComprobanteFac.add("D ");
 		
-		listaTicketComprobanteFac.add("IFECHA DE EMISIÓN:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
+		listaTicketComprobanteFac.add("IFECHA: &D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
 		listaTicketComprobanteFac.add("========================================");
 		
 		listaTicketComprobanteFac.add("IPAGO:&D"+"RECARGA");
@@ -156,10 +153,10 @@ public class TicketPrint
 		listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(tx.getFecha(),"yyyy-MM-dd HH:mm:ss"));
 		
 		//if(tx.getDireccionBanco()!=null &&  !tx.getDireccionBanco().isEmpty() )
-		//  listaTicketComprobanteFac.add("INºCOMPROBANTE:&D"+tx.getDireccionBanco());
+		//  listaTicketComprobanteFac.add("INï¿½COMPROBANTE:&D"+tx.getDireccionBanco());
 		/*else if(producto.getCodProductoEspecial()==6) //Mastercard
 		{
-			listaTicketComprobanteFac.add("INºCOMPROBANTE:&D"+tx.getNumeroTransaccion());
+			listaTicketComprobanteFac.add("INï¿½COMPROBANTE:&D"+tx.getNumeroTransaccion());
 		}*/
 		
 		//if(tx.getNumeroTransaccionComision()!=null &&  !tx.getNumeroTransaccionComision().isEmpty() )

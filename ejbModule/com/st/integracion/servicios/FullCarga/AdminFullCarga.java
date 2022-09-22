@@ -25,7 +25,7 @@ import org.quartz.impl.triggers.CronTriggerImpl;
 
 import com.google.common.collect.ImmutableMap;
 import com.st.integracion.beans.FullCarga.AdminFullCargaLocal;
-import com.st.integracion.network.FullCarga.ClaroClientPipelineFactory;
+import com.st.integracion.network.FullCarga.FullCargaClientPipelineFactory;
 import com.st.integracion.servicios.AdminConeccionMBean;
 
 import io.netty.bootstrap.Bootstrap;
@@ -89,7 +89,7 @@ public class AdminFullCarga implements AdminConeccionMBean {
 		SslContext sslCtx = null;
 		//Agregar cuando la direccion es HTTPS
 		sslCtx = SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build();		
-		ClaroClientPipelineFactory pipelineFactory=new ClaroClientPipelineFactory(sslCtx);
+		FullCargaClientPipelineFactory pipelineFactory=new FullCargaClientPipelineFactory(sslCtx);
 		EventLoopGroup group = new NioEventLoopGroup();
 		bootstrap.group(group)
         .channel(NioSocketChannel.class)

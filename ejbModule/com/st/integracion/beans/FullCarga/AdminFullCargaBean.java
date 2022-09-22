@@ -2,7 +2,6 @@ package com.st.integracion.beans.FullCarga;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,6 +40,7 @@ import com.st.integracion.cliente.st.ConsumoServiceService;
 import com.st.integracion.data.FullCarga.AnulacionDb;
 import com.st.integracion.data.FullCarga.Datos;
 import com.st.integracion.dto.Transaccion;
+import com.st.integracion.dto.Transaccion.TipoOperacion;
 import com.st.integracion.dto.FullCarga.ConfiguracionCorreo;
 import com.st.integracion.dto.FullCarga.DatosConfiguracion;
 import com.st.integracion.dto.FullCarga.DatosConfiguracionWsdl;
@@ -51,7 +51,6 @@ import com.st.integracion.dto.FullCarga.Productos;
 import com.st.integracion.dto.FullCarga.ReversoAnulacionObj;
 import com.st.integracion.dto.FullCarga.TransaccionFullCarga;
 import com.st.integracion.dto.FullCarga.Transaccional;
-import com.st.integracion.dto.Transaccion.TipoOperacion;
 import com.st.integracion.exceptions.TransaccionException;
 import com.st.integracion.servicios.PropiedadesProveedorProducto;
 import com.st.integracion.servicios.RegistroServicios;
@@ -60,12 +59,9 @@ import com.st.integracion.servicios.FullCarga.ServicioFullCarga;
 import com.st.integracion.servicios.FullCarga.VariablesFullCargaLocal;
 import com.st.integracion.ticket.TicketsBeanRemote;
 import com.st.integracion.util.FullCarga.TicketPrint;
-import com.st.integracion.util.FullCarga.TransaccionDatos;
 import com.st.integracion.util.FullCarga.Utilitaria;
 import com.st.integracion.ws.FullCarga.ConsultaFullCargaSt;
 import com.st.integracion.ws.FullCarga.ParametrosRespuesta;
-import com.st.integracion.ws.FullCarga.datosRecarga;
-import com.st.integracion.ws.FullCarga.detallesCliente;
 import com.thoughtworks.xstream.XStream;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -145,117 +141,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		Connection Conn = null;
 		try {
 			Conn = this.postgresTrbXADS.getConnection();
-			if (codigoEstadoConexion == 71) // pagos
-			{
-				tipoOperacion = TipoOperacion.COMPRAR_PIN_INTERNET;
-				codigoEstado = 77;// Recibida del MDB para proceso de compra de pin de internet
-				codigoProceso = 69;// Recibida del MDB para proceso de compra de pin de internet
-				trn.setCodigoEstado(codigoEstado);
-				trn.setCodigoProceso(codigoProceso);
-				trn.setTipoOperacion(tipoOperacion);
-
-				DocumentBuilder builder1;
-				builder1 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				InputSource is = new InputSource(new StringReader(mvmParametroXmlIn));
-				Document root = builder1.parse(is);
-
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				factory.setNamespaceAware(true);
-				DocumentBuilder builder = factory.newDocumentBuilder();
-
-				// String nuevoXmlIn =
-				// parametrosRespuesta+"SEPARADORST"+consultaTransacion;//+"SEPARADORST"+pagoTransaccion;
-				String nuevoXmlIn = "";// +"SEPARADORST"+pagoTransaccion;
-
-				trn.setParametrosXmlInTransaccion(nuevoXmlIn);
-
-				// InfoEmpresa
-				Node sasInfoEmpresa = root.getElementsByTagName("InfoEmpresa").item(0);
-				Document newInfoEmpresa = builder.newDocument();
-				Node importedNodeInfoEmpresa = newInfoEmpresa.importNode(sasInfoEmpresa, true);
-				newInfoEmpresa.appendChild(importedNodeInfoEmpresa);
-
-				String infoEmpresa = utl.getStringFromDoc(newInfoEmpresa);
-				trn.setParametrosInfoEmpresa(infoEmpresa);
-				// trn.setFechaColaPeticion(fechaRecibidaColaPeticion);
-
-				this.odatos.insertarTransaccional(Conn, codigoMovimiento, numTransaccion, fecha,
-						trn.getFechaColaPeticionCompraPinInternet(), descripcion, codigoCliente, codigoUsuario,
-						valorContable, referenciaCliente, mvmParametroXmlIn, identificadorHost, referenciaProveedor,
-						mvmParametroXmlOut, codigoBodega, codigoProveedorProducto, codigoEstado, codigoProceso);
-
-				descripcionM = "AdminFullCargaBean-TransaccionRecibida: La transaccion numero :"
-						+ trn.getNumTransaccion() + "|" + " ,sera procesada para compra PIN INTERNET";
-				log.info(descripcionM);
-			} else if (codigoEstadoConexion == 74) // reverso pago
-			{
-
-				tipoOperacion = TipoOperacion.ANULACION_CMP_PIN_INTERNET;
-				trn.setTipoOperacion(tipoOperacion);
-
-				DocumentBuilder builder1;
-				builder1 = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-				InputSource is = new InputSource(new StringReader(mvmParametroXmlIn));
-				Document root = builder1.parse(is);
-
-				Node sas = root.getElementsByTagName("ConsultaTransaccion").item(0);
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				factory.setNamespaceAware(true);
-				DocumentBuilder builder = factory.newDocumentBuilder();
-				Document newDocument = builder.newDocument();
-				Node importedNode = newDocument.importNode(sas, true);
-				newDocument.appendChild(importedNode);
-				Utilitaria utl = new Utilitaria();
-				String consultaTransacion = utl.getStringFromDoc(newDocument);
-
-				Node sasParametrosRespuesta = root.getElementsByTagName("ParametrosRespuesta").item(0);
-				Document newDocumentParametrosRespuesta = builder.newDocument();
-				Node importedNodeParametrosRespuesta = newDocumentParametrosRespuesta.importNode(sasParametrosRespuesta,
-						true);
-				newDocumentParametrosRespuesta.appendChild(importedNodeParametrosRespuesta);
-
-				String parametrosRespuesta = utl.getStringFromDoc(newDocumentParametrosRespuesta);
-
-				JAXBContext jaxbContextTemp = JAXBContext.newInstance(ParametrosRespuesta.class);
-				Unmarshaller unmarshallerTemp = jaxbContextTemp.createUnmarshaller();
-
-				StringReader readerTemp = new StringReader(parametrosRespuesta);
-				ParametrosRespuesta parametrosRespu = (ParametrosRespuesta) unmarshallerTemp.unmarshal(readerTemp);
-				trn.setParametrosRespuesta(parametrosRespu);
-
-				BigDecimal montoInternacional = new BigDecimal(0.00);
-
-				Node sasPagoTransaccion = root.getElementsByTagName("PagoTransaccion").item(0);
-				DocumentBuilderFactory factoryPagoTransaccion = DocumentBuilderFactory.newInstance();
-				factoryPagoTransaccion.setNamespaceAware(true);
-				DocumentBuilder buildersasPagoTransaccion = factoryPagoTransaccion.newDocumentBuilder();
-				Document newDocumentPagoTransaccion = buildersasPagoTransaccion.newDocument();
-				Node importedNodePagoTransaccion = newDocumentPagoTransaccion.importNode(sasPagoTransaccion, true);
-				newDocumentPagoTransaccion.appendChild(importedNodePagoTransaccion);
-
-				String pagoTransaccion = utl.getStringFromDoc(newDocumentPagoTransaccion);
-				String nuevoXmlIn = parametrosRespuesta + "SEPARADORST" + consultaTransacion + "SEPARADORST"
-						+ pagoTransaccion;
-				trn.setParametrosXmlInTransaccion(nuevoXmlIn);
-
-				// Transaccion data
-				String parametrosRS = Utilitaria.obtenerHijoXml(mvmParametroXmlIn, "ParametrosRespuesta");
-				ParametrosRespuesta parametrosRLocal = (ParametrosRespuesta) Utilitaria.convertirXmlToObj(parametrosRS,
-						ParametrosRespuesta.class);
-				trn.setParametrosRespuesta(parametrosRLocal);
-				// InfoEmpresa
-				Node sasInfoEmpresa = root.getElementsByTagName("InfoEmpresa").item(0);
-				Document newInfoEmpresa = builder.newDocument();
-				Node importedNodeInfoEmpresa = newInfoEmpresa.importNode(sasInfoEmpresa, true);
-				newInfoEmpresa.appendChild(importedNodeInfoEmpresa);
-
-				String infoEmpresa = utl.getStringFromDoc(newInfoEmpresa);
-				trn.setParametrosInfoEmpresa(infoEmpresa);
-				trn.setFechaColaPeticionCompraPinInternet(fecha);
-				addReverso(trn, new Date(), 1, Conn);
-			}
-
-			else if (codigoEstadoConexion == 1) { // que transaccion hago
+			if (codigoEstadoConexion == 1) {
 				tipoOperacion = TipoOperacion.RECARGA;
 				codigoEstado = 7;// Recibida del MDB para proceso de recarga
 				codigoProceso = 9;// Recibida del MDB para proceso de recarga
@@ -272,16 +158,8 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				factory.setNamespaceAware(true);
 				DocumentBuilder builder = factory.newDocumentBuilder();
 
-				// String nuevoXmlIn =
-				// parametrosRespuesta+"SEPARADORST"+consultaTransacion;//+"SEPARADORST"+pagoTransaccion;
-				String nuevoXmlIn = "";// +"SEPARADORST"+pagoTransaccion;
+				trn.setParametrosXmlInTransaccion("");
 
-				trn.setParametrosXmlInTransaccion(nuevoXmlIn);
-				// ParametrosRespuesta
-				String parametrosrespuesta = Utilitaria.obtenerHijoXml(mvmParametroXmlIn, "ParametrosRespuesta");
-				// ConsultaTransaccion
-				String consultatransaccion = Utilitaria.obtenerHijoXml(mvmParametroXmlIn, "ConsultaTransaccion");
-				// InfoEmpresa
 				Node sasInfoEmpresa = root.getElementsByTagName("InfoEmpresa").item(0);
 				Document newInfoEmpresa = builder.newDocument();
 				Node importedNodeInfoEmpresa = newInfoEmpresa.importNode(sasInfoEmpresa, true);
@@ -289,7 +167,6 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 				String infoEmpresa = utl.getStringFromDoc(newInfoEmpresa);
 				trn.setParametrosInfoEmpresa(infoEmpresa);
-				// trn.setFechaColaPeticion(fechaRecibidaColaPeticion);
 
 				this.odatos.insertarTransaccional(Conn, codigoMovimiento, numTransaccion, fecha,
 						trn.getFechaColaPeticionRecarga(), descripcion, codigoCliente, codigoUsuario, valorContable,
@@ -297,11 +174,10 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 						mvmParametroXmlOut, codigoBodega, codigoProveedorProducto, codigoEstado, codigoProceso);
 
 				descripcionM = "AdminFullCargaBean-TransaccionRecibida: La transaccion numero :"
-						+ trn.getNumTransaccion() + "|" + " ,sera procesada para compra PIN INTERNET";
+						+ trn.getNumTransaccion() + "|" + " ,sera procesada para RECARGA";
 				log.info(descripcionM);
 
 			}
-
 		}
 
 		catch (SQLException e) {
@@ -312,10 +188,6 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			trn = null;
 			throw new TransaccionException(e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			// descripcion = "Metodo: TransaccionRecibida; Exception: Insertando en la
-			// transaccional";
-			// AdminInteraguaBean.log.info(trn + descripcion);
 			log.info("Exception-AdminInteraguaBean-TransaccionRecibida:" + e.getMessage());
 			e.printStackTrace();
 			this.context.setRollbackOnly();
@@ -1049,36 +921,11 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				return;
 			} else if (codigoEstado == 2) // Recarga Realizada
 			{
-				mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor);
-				descripcion = "Recarga Realizada-AdminInteragua-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta| No. transaccion :"
-						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
-				AdminFullCargaBean.log.info(trn + descripcion);
-			} else if (codigoEstado == 3) // Recarga No Realizada
-			{
-				mvmNuevo.setMvmReferenciaProveedor("NAK");
-				descripcion = "Recarga No Realizada-AdminInteragua-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta | No. transaccion :"
-						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
-				AdminFullCargaBean.log.info(trn + descripcion);
-			}
-			if (codigoEstado == 71) // Compra de pin intenet en proceso
-			{
-				descripcion = "Compra de pin intenet en proceso-AdminInteragua-responderCola: llamada a consultarRecarga de ServicioConeccion | No. transaccion :"
-						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
-				AdminFullCargaBean.log.info(trn + descripcion);
-				ServicioConeccion sc = RegistroServicios.registroInstance()
-						.getServicioConeccion(codigoProveedorProducto);
-				if (trn.getCantReqRealizados() <= 10)
-					sc.anularCompraPinInternet(trn);
-				else
-					log.info("Numero de reintentos agotados transaccion quedara pendiente |" + trn.toString());
-				return;
-			} else if (codigoEstado == 72) // Compra de Pin intenet Realizada
-			{
 				RegistroServicios registro;
 				registro = RegistroServicios.registroInstance();
 
 				ServicioFullCarga servicioInteragua = (ServicioFullCarga) registro
-						.getServicioConeccion(codigoProveedorProducto); // codigo por default para obtener el servicio
+						.getServicioConeccion(codigoProveedorProducto);
 				VariablesFullCargaLocal varInteragua = servicioInteragua.getVariables();
 				Map<Long, Producto> listaProductos = varInteragua.getListaProductos();
 
@@ -1094,10 +941,10 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 				String ticketComprobanteStr = adminCliente.procesarTickets(ticketComprobante, 40);
 
-				log.info("Ticket Comprobante venta =" + ticketComprobanteStr);
+				log.info("Ticket Comprobante recarga =" + ticketComprobanteStr);
 
 				mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor);
-				descripcion = "Compra de Pin intenet Realizada-AdminBancoPacifico-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta| No. transaccion :"
+				descripcion = "Recarga Realizada-AdminBancoPacifico-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta| No. transaccion :"
 						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
 				AdminFullCargaBean.log.info(trn + descripcion);
 
@@ -1108,69 +955,22 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 				mvmNuevo.setMvmParametroXmlOut(xmlOutRespuesta);
 
-				// log.info("LAST:"+trn.getTramaTxRequerimiento());
-
-			} else if (codigoEstado == 73) // Compra de Pin intenet No Realizada
+			} else if (codigoEstado == 3) // Recarga No Realizada
 			{
 				mvmNuevo.setMvmReferenciaProveedor("NAK");
-				descripcion = "Compra de Pin intenet No Realizada-AdminInteragua-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta | No. transaccion :"
+				descripcion = "Recarga No Realizada-AdminInteragua-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta | No. transaccion :"
 						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
 				AdminFullCargaBean.log.info(trn + descripcion);
 			}
-			if (codigoEstado == 74 || codigoEstado == 76) // Compra de pin intenet en proceso
-			{
-				descripcion = "Compra de pin intenet en proceso-AdminInteragua-responderCola: llamada a consultarRecarga de ServicioConeccion | No. transaccion :"
-						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
-				AdminFullCargaBean.log.info(trn + descripcion);
-				ServicioConeccion sc = RegistroServicios.registroInstance()
-						.getServicioConeccion(codigoProveedorProducto);
-				if (trn.getCantReqRealizados() <= 10)
-					sc.anularCompraPinInternet(trn);
-				else {
-					trn.setCodigoEstado(76); // Anualcion no realizada
-					trn.setCodigoProceso(54); // respuesta anulacion no realizada
-					trn.setCodigoRetorno("4567");
-					trn.setMensajeRetorno("Intentos de Anulacion Agotados");
-					actualizarAAnulacionNoRealizada(trn);
-					log.info(
-							"Numero de reintentos de Anulacion agotados, transaccion quedara como anulacion no realizada |"
-									+ trn.toString());
-				}
-				return;
-			} else if (codigoEstado == 75) {
-				/*
-				 * mvmNuevo.setDescripcionError(this.realizarConsultaRecaudo("", 1L,
-				 * mvmNuevo.getMvmNumTransaccion().toString()));
-				 * mvmNuevo.setMensajeProveedor(this.realizarConsultaRecaudo("", 1L,
-				 * mvmNuevo.getMvmNumTransaccion().toString()));
-				 * mvmNuevo.setMvmEstadoFk(this.actualizarNumTransacConsulta(1L, 1751L));
-				 * mvmNuevo.setMvmFechaRespuesta(new Date());
-				 */
 
-			}
 			log.info("CltMovimiento  a responder =" + mvmNuevo.toString());
 
 			enviarMensajeWebServiceRespuesta(mvmNuevo);
 
 			log.info("idMensajeProveedor = " + idMensajeProveedor);
-			/*
-			 * MessageProducer prod = session.createProducer(this.queqeResponse);
-			 * BytesMessage msg = session.createBytesMessage(); byte[] bytes = null;
-			 * ByteArrayOutputStream bos = new ByteArrayOutputStream(); try {
-			 * ObjectOutputStream oos = new ObjectOutputStream(bos);
-			 * oos.writeObject(mvmNuevo); oos.flush(); oos.close(); bos.close(); bytes =
-			 * bos.toByteArray (); } catch (IOException ex) { //TODO: Handle the exception
-			 * ex.printStackTrace(); } catch (Exception ex) { //TODO: Handle the exception
-			 * ex.printStackTrace(); }
-			 * 
-			 * msg.writeBytes(bytes); // ObjectMessage msg = session.createObjectMessage();
-			 * // msg.setObject(mvmNuevo); prod.send(msg);
-			 */
+
 			log.info("AdminInteragua-responderCola: mensaje enviado a la cola de respuesta reloaded " + trn);
-		} /*
-			 * catch (JMSException e) { this.context.setRollbackOnly(); e.printStackTrace();
-			 * throw e; }
-			 */catch (Exception e) {
+		} catch (Exception e) {
 			this.context.setRollbackOnly();
 			e.printStackTrace();
 		} finally {
@@ -1182,127 +982,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			} catch (JMSException e) {
 			}
 		}
-
-		/*
-		 * Long codigoMovimiento=trn.getCodigoMovimiento(); Long
-		 * numTransaccion=trn.getNumTransaccion(); java.util.Date fecha=trn.getFecha();
-		 * String descripcion=trn.getDescripcionErrorRsp(); Long
-		 * codigoCliente=trn.getCodigoCliente(); Long
-		 * codigoUsuario=trn.getCodigoUsuario(); BigDecimal
-		 * valorContable=trn.getValorContable(); String
-		 * referenciaCliente=trn.getReferenciaCliente(); String
-		 * mvmParametroXmlIn=trn.getMvmParametroXmlIn(); String
-		 * identificadorHost=trn.getIdentificadorHost(); String
-		 * referenciaProveedor=trn.getReferenciaProveedor(); String
-		 * mvmParametroXmlOut=trn.getMvmParametroXmlOut(); Long
-		 * codigoBodega=trn.getCodigoBodega(); Long
-		 * codigoProveedorProducto=trn.getCodigoProveedorProducto(); Long
-		 * estadoFK=trn.getEstadoFK(); int codigoEstado = trn.getCodigoEstado();
-		 * trn.setCodigoEstadoConexion((long)codigoEstado); Long
-		 * codigoEstadoConexion=trn.getCodigoEstadoConexion(); QueueConnection
-		 * conn=null; QueueSession session = null;
-		 * 
-		 * try { conn=this.respuestaFactory.createQueueConnection(); session =
-		 * conn.createQueueSession(false, Session.AUTO_ACKNOWLEDGE); CltMovimiento
-		 * mvmNuevo=new CltMovimiento(); mvmNuevo.setMvmCodigo(codigoMovimiento);
-		 * mvmNuevo.setMvmNumTransaccion(numTransaccion); mvmNuevo.setMvmFecha(fecha);
-		 * //mvmNuevo.setMvmDescripcion(descripcion);
-		 * mvmNuevo.setMensajeProveedor(descripcion);
-		 * mvmNuevo.setMvmClienteFk(codigoCliente);
-		 * mvmNuevo.setMvmCodigoUsuario(codigoUsuario);
-		 * mvmNuevo.setMvmValorContable(valorContable);
-		 * mvmNuevo.setMvmReferencia(referenciaCliente);
-		 * mvmNuevo.setMvmParametroXmlIn(mvmParametroXmlIn);
-		 * mvmNuevo.setMvmIdentificadorHost(identificadorHost);
-		 * mvmNuevo.setMvmParametroXmlOut(mvmParametroXmlOut);
-		 * mvmNuevo.setMvmBodegaFk(codigoBodega);
-		 * mvmNuevo.setMvmProveedorProductoFk(codigoProveedorProducto);
-		 * mvmNuevo.setMvmEstadoFk(estadoFK);
-		 * mvmNuevo.setCodigoEstadoConexion(codigoEstadoConexion);
-		 * 
-		 * if (codigoEstado == 1) //Recarga en proceso { descripcion =
-		 * "Metodo: responderCola; llamada a consultarRecarga de ServicioConeccion | No. transaccion :"
-		 * +trn.getNumTransaccion() +" No. Serie : "+trn.getReferenciaCliente();
-		 * AdminInteraguaBean.log.info(trn + descripcion); ServicioConeccion sc =
-		 * RegistroServicios.registroInstance().getServicioConeccion(
-		 * codigoProveedorProducto); sc.consultarRecarga(trn); return; } else if
-		 * (codigoEstado == 2) //Recarga Realizada {
-		 * mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor); descripcion =
-		 * "Metodo: responderCola; Enviando Tarjetas_vendidas a la cola de respuesta| No. transaccion :"
-		 * +trn.getNumTransaccion() +" No. Serie : "+trn.getReferenciaCliente();
-		 * AdminInteraguaBean.log.info(trn + descripcion); } else if (codigoEstado == 3)
-		 * //Recarga No Realizada { mvmNuevo.setMvmReferenciaProveedor("NAK");
-		 * descripcion =
-		 * "Metodo: responderCola; Enviando Tarjetas_vendidas a la cola de respuesta | No. transaccion :"
-		 * +trn.getNumTransaccion() +" No. Serie : "+trn.getReferenciaCliente();
-		 * AdminInteraguaBean.log.info(trn + descripcion); }else if (codigoEstado ==
-		 * 4){// Anulacion en proceso ServicioConeccion sc =
-		 * RegistroServicios.registroInstance().getServicioConeccion(
-		 * codigoProveedorProducto); sc.anular(trn); descripcion =
-		 * "Metodo: responderCola; llamada a anular de ServicioConeccion";
-		 * AdminInteraguaBean.log.info(trn + descripcion); return; } else if
-		 * (codigoEstado == 5) {//Anulacion Realizada
-		 * mvmNuevo.setMvmReferenciaProveedor("ANL00"); descripcion =
-		 * "Metodo: responderCola; Enviando Tarjetas_vendidas a la cola de respuesta";
-		 * AdminInteraguaBean.log.info(trn + descripcion); } else if (codigoEstado == 6)
-		 * { //Anulacion No Realizada String pin = trn.getReferenciaProveedor();
-		 * mvmNuevo.setMvmReferenciaProveedor(pin); descripcion =
-		 * "Metodo: responderCola; Enviando Tarjetas_vendidas a la cola de respuesta";
-		 * AdminInteraguaBean.log.info(trn + descripcion); } else if (codigoEstado ==
-		 * 57) //Compra de pin en proceso { ServicioConeccion sc =
-		 * RegistroServicios.registroInstance().getServicioConeccion(
-		 * codigoProveedorProducto); sc.anularCompraPin(trn); descripcion =
-		 * "Metodo: responderCola; Recarga en proceso, llamada a anularCompraPin de ServicioConeccion"
-		 * ; AdminInteraguaBean.log.info(trn+descripcion); return; } else if
-		 * (codigoEstado == 58) //Compra de pin Realizada {
-		 * mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor); descripcion =
-		 * "Metodo: responderCola; Compra de pin  Realizada, Enviando Tarjetas_vendidas a la cola de respuesta"
-		 * ;
-		 * 
-		 * AdminInteraguaBean.log.info(trn+descripcion);
-		 * //AdminEuronetBean.log.info(this.utl.mensajeLogEuronet(trn,descripcion)); }
-		 * else if (codigoEstado == 59) //Compra de pin No Realizada {
-		 * mvmNuevo.setMvmReferenciaProveedor("NAK");
-		 * 
-		 * descripcion =
-		 * "Metodo: responderCola; Compra de pin  No Realizada, Enviando Tarjetas_vendidas a la cola de respuesta"
-		 * ; //AdminEuronetBean.log.info(this.utl.mensajeLogEuronet(trn,descripcion));
-		 * 
-		 * AdminInteraguaBean.log.info(trn+descripcion); } else if (codigoEstado ==
-		 * 60){// Anulacion de la compra de pin en proceso ServicioConeccion sc =
-		 * RegistroServicios.registroInstance().getServicioConeccion(
-		 * codigoProveedorProducto); sc.anularCompraPin(trn);
-		 * AdminInteraguaBean.log.info(trn+descripcion); return; } else if (codigoEstado
-		 * == 61) {//Anulacion de la compra de pin Realizada
-		 * mvmNuevo.setMvmReferenciaProveedor("ANL00"); descripcion =
-		 * "Metodo: responderCola; Anulacion de la compra de pin  Realizada, Enviando Tarjetas_vendidas a la cola de respuesta"
-		 * ; AdminInteraguaBean.log.info(trn+descripcion); } else if (codigoEstado ==
-		 * 62) { //Anulacion de la compra de pin No Realizada
-		 * mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor); descripcion =
-		 * "Metodo: responderCola; Anulacion No Realizada, Enviando Tarjetas_vendidas a la cola de respuesta"
-		 * ; AdminInteraguaBean.log.info(trn+descripcion); }
-		 * 
-		 * 
-		 * 
-		 * 
-		 * MessageProducer prod =
-		 * session.createProducer(HornetQJMSClient.createQueue("RespQueue"));
-		 * BytesMessage msg = session.createBytesMessage(); byte[] bytes = null;
-		 * ByteArrayOutputStream bos = new ByteArrayOutputStream(); try {
-		 * ObjectOutputStream oos = new ObjectOutputStream(bos);
-		 * oos.writeObject(mvmNuevo); oos.flush(); oos.close(); bos.close(); bytes =
-		 * bos.toByteArray (); } catch (IOException ex) { //TODO: Handle the exception
-		 * ex.printStackTrace(); } catch (Exception ex) { //TODO: Handle the exception
-		 * ex.printStackTrace(); }
-		 * 
-		 * msg.writeBytes(bytes); ObjectMessage msg = session.createObjectMessage();
-		 * msg.setObject(mvmNuevo); prod.send(msg);
-		 * log.info("mensaje enviado a la cola de respuesta reloaded "+trn); }catch
-		 * (JMSException e) { this.context.setRollbackOnly(); e.printStackTrace(); throw
-		 * e; }catch (Exception e) { this.context.setRollbackOnly();
-		 * e.printStackTrace(); } finally { try { if(session!=null) session.close();
-		 * if(conn!=null) conn.close(); } catch (JMSException e) {} }
-		 */}
+	}
 
 	private int enviarMensajeWebServiceRespuesta(CltMovimiento clt) {
 		int retorno = 0;

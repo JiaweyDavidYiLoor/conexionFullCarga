@@ -2,39 +2,24 @@ package com.st.integracion.network.FullCarga;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.st.integracion.dto.FullCarga.Producto;
-import com.st.integracion.dto.FullCarga.Productos;
-import com.st.integracion.dto.FullCarga.TransaccionFullCarga;
 import com.st.integracion.dto.Transaccion.TipoOperacion;
-import com.st.integracion.servicios.FullCarga.VariablesFullCargaLocal;
+import com.st.integracion.dto.FullCarga.TransaccionFullCarga;
 import com.st.integracion.util.FullCarga.ElementosResponse;
-import com.st.integracion.util.FullCarga.TransaccionDatos;
-import com.st.integracion.util.FullCarga.TransaccionRespuesta;
 import com.st.integracion.util.FullCarga.Utilitaria;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -42,15 +27,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.util.CharsetUtil;
 
-public class ClaroChannelHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
+public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
 
 	public static final String HANDLER_NAME = "TrbChannelHandler";
-	private static final Logger log = Logger.getLogger(ClaroChannelHandler.class);
+	private static final Logger log = Logger.getLogger(FullCargaChannelHandler.class);
 	private final DocumentBuilder builder;
 	private Utilitaria utl = new Utilitaria();
-	private static final Set<ClaroChannelListener> listeners = new CopyOnWriteArraySet<ClaroChannelListener>();
+	private static final Set<FullCargaChannelListener> listeners = new CopyOnWriteArraySet<FullCargaChannelListener>();
 
-	public ClaroChannelHandler() throws ParserConfigurationException {
+	public FullCargaChannelHandler() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setCoalescing(true);
 		this.builder = factory.newDocumentBuilder();
@@ -107,13 +92,10 @@ public class ClaroChannelHandler extends SimpleChannelInboundHandler<FullHttpRes
 		try {
 			respuestaProveedorXML = Utilitaria.obtenerHijoXml(f2, "response");
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -137,27 +119,22 @@ public class ClaroChannelHandler extends SimpleChannelInboundHandler<FullHttpRes
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setFechaRespuestaRecarga(new Date());
 			tx.setReferenciaSigma(Integer.toString(respuestaProveedor.getReferenciaSigma()));
-		} else if (tipoRespuesta.compareTo("Reverso Realizado Correctamente.") == 0) {
-			tx.setTipoOperacion(TipoOperacion.ANULACION_CMP_PIN_INTERNET);
-			tx.setMensajeRetorno("");
-			tx.setDescripcion(tipoRespuesta);
+		}  else {
 			tx.setCodigoRetorno(tipoRespuesta);
-		} else {
-			tx.setCodigoRetorno("TRMALFOR");
 			tx.setMensajeRetorno("Formato Incorrecto en Trama de Respuesta");
 		}
 
 		return tx;
 	}
 
-	public static void addChannelListener(ClaroChannelListener listener) {
+	public static void addChannelListener(FullCargaChannelListener listener) {
 		listeners.add(listener);
 		if (listeners.size() > 0)
 			log.info(String.format("TrbChannelHandler-addChannelListener: actualmente hay %d listeners en el handler",
 					listeners.size()));
 	}
 
-	public static void removeChannelListener(ClaroChannelListener listener) {
+	public static void removeChannelListener(FullCargaChannelListener listener) {
 		listeners.remove(listener);
 		if (listeners.size() > 0)
 			log.info(
@@ -167,7 +144,7 @@ public class ClaroChannelHandler extends SimpleChannelInboundHandler<FullHttpRes
 
 	private void fireRespuesta(TransaccionFullCarga respuesta) {
 		TipoOperacion tipoRespuesta = respuesta.getTipoOperacion();
-		for (ClaroChannelListener l : listeners) {
+		for (FullCargaChannelListener l : listeners) {
 			l.recargaRespondida(respuesta);
 		}
 	}

@@ -10,7 +10,7 @@ import com.st.integracion.dto.FullCarga.DatosConfiguracion;
 ;
 
 
-@Named("VariablesClaroMXBean")
+@Named("VariablesFullCargaMXBean")
 public interface VariablesFullCargaMXBean {
 	
 	//void setServicioSt(ServicioSt servicioSt);
