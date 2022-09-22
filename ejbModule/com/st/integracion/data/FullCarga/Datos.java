@@ -97,7 +97,7 @@ public class Datos {
 	
 
 
-	public boolean actualizarTransaccionalEnvioCompraPinIntenet(Connection Conn, Date fechaEnvioCompraPinInternet,
+	public boolean actualizarTransaccionalEnvioRecarga(Connection Conn, Date fechaEnvioCompraPinInternet,
 			int codigoEstado, int codigoProceso, Long transacId, Long numeroTicket) throws Exception
 	{
 		boolean ban = false;
@@ -123,7 +123,7 @@ public class Datos {
 		return ban;
 	}
 	
-	public boolean insertarTransaccionalDetalleEnvioCompraPinInternet(Connection Conn,
+	public boolean insertarTransaccionalDetalleEnvioRecarga(Connection Conn,
 			Long codigoMovimiento,
 			Long numTransaccion,
 			Long transacId,

@@ -167,6 +167,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 				String infoEmpresa = utl.getStringFromDoc(newInfoEmpresa);
 				trn.setParametrosInfoEmpresa(infoEmpresa);
+				trn.setFechaEnvioRecarga(fecha);
 
 				this.odatos.insertarTransaccional(Conn, codigoMovimiento, numTransaccion, fecha,
 						trn.getFechaColaPeticionRecarga(), descripcion, codigoCliente, codigoUsuario, valorContable,
@@ -242,10 +243,10 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			String etapaTransaccion = "TX";
 			Conn = postgresTrbXADS.getConnection();
 
-			this.odatos.insertarTransaccionalDetalleEnvioCompraPinInternet(Conn, codigoMovimiento, numTransaccion,
-					transacId, numeroTransaccion, fechaEnvioCompraPinInternet, valor, fechaConciliacionStr);
+			this.odatos.insertarTransaccionalDetalleEnvioRecarga(Conn, codigoMovimiento, numTransaccion, transacId,
+					numeroTransaccion, fechaEnvioCompraPinInternet, valor, fechaConciliacionStr);
 
-			this.odatos.actualizarTransaccionalEnvioCompraPinIntenet(Conn, fechaEnvioCompraPinInternet, codigoEstado,
+			this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioCompraPinInternet, codigoEstado,
 					codigoProceso, transacId, numTransaccion);
 
 			descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
@@ -1013,41 +1014,43 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 	@Override
 	protected void transaccionEnviadaRecarga(Transaccion tx) throws TransaccionException {
-
 		Connection Conn = null;
 		String descripcion = null;
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
-		descripcion = "AdminInteragua-TransaccionEnviadaRecarga: Inicio";
+		descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: Inicio";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		try {
-			/*
-			 * Date fechaEnvioRecarga = trn.getFechaEnvioRecarga(); int codigoEstado = 1; //
-			 * Recarga en proceso int codigoProceso = 1; // Peticion Recarga
-			 * 
-			 * if(trn.getTipoServicioEasycash()==TipoServicioEasyCash.RECAUDO) {
-			 * codigoEstado=71; //Compra de Pin en Proceso codigoProceso=61;//Peticion
-			 * Compra de Pin } trn.setCodigoEstado(codigoEstado);
-			 * trn.setCodigoProceso(codigoProceso); Long numeroTransaccion =
-			 * trn.getNumTransaccion(); Long codigoMovimiento = trn.getCodigoMovimiento();
-			 * Long transacId = trn.getTransacId(); String datosTransaccion =
-			 * trn.getDatosTransaccion();
-			 * 
-			 * Conn = postgresInteraguaXADS.getConnection();
-			 * 
-			 * this.odatos.insertarTransaccionalDetalleEnvioRecarga(Conn, fechaEnvioRecarga,
-			 * datosTransaccion, transacId, codigoMovimiento, numeroTransaccion);
-			 * 
-			 * this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioRecarga,
-			 * codigoEstado,codigoProceso ,transacId, numeroTransaccion);
-			 * 
-			 * descripcion =
-			 * "AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle"
-			 * ; AdminInteraguaBean.log.info(trn + descripcion); } catch(SQLException e) {
-			 * descripcion =
-			 * "SQLException-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle"
-			 * ; AdminInteraguaBean.log.info(trn + descripcion); e.printStackTrace();
-			 * context.setRollbackOnly(); throw new TransaccionException();
-			 */
+			Date fechaEnvioRecarga = trn.getFechaEnvioRecarga();
+			int codigoEstado = 1; // Recarga en proceso
+			int codigoProceso = 1; // Peticion Recarga
+			trn.setCodigoEstado(codigoEstado);
+			trn.setCodigoProceso(codigoProceso);
+
+			Long codigoMovimiento = trn.getCodigoMovimiento();
+			Long numTransaccion = trn.getNumTransaccion();
+			Long transacId = trn.getTransacId();
+			String numeroTransaccion = trn.getNumeroTransaccion();
+			BigDecimal valor = trn.getValorContable();
+			String tramaEnvio = trn.getTramaTxRequerimiento();
+			log.info("TRAMAR:" + tramaEnvio);
+			String fechaConciliacionStr = Utilitaria.formatFecha(new Date(), "dd-MM-yyyy");
+
+			Conn = postgresTrbXADS.getConnection();
+
+			this.odatos.insertarTransaccionalDetalleEnvioRecarga(Conn, codigoMovimiento, numTransaccion, transacId,
+					numeroTransaccion, fechaEnvioRecarga, valor, fechaConciliacionStr);
+
+			this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioRecarga, codigoEstado,
+					codigoProceso, transacId, numTransaccion);
+
+			descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
+			AdminFullCargaBean.log.info(trn + descripcion);
+		} catch (SQLException e) {
+			descripcion = "SQLException-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
+			AdminFullCargaBean.log.info(trn + descripcion);
+			e.printStackTrace();
+			context.setRollbackOnly();
+			throw new TransaccionException();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			descripcion = "Exception-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
@@ -1064,6 +1067,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				}
 			}
 		}
+
 	}
 
 	@Override
