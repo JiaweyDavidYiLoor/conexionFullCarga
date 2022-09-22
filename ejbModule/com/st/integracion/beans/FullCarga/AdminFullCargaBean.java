@@ -20,8 +20,6 @@ import javax.jms.JMSException;
 import javax.jms.QueueConnection;
 import javax.jms.QueueSession;
 import javax.sql.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.ws.BindingProvider;
@@ -1031,8 +1029,6 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			Long transacId = trn.getTransacId();
 			String numeroTransaccion = trn.getNumeroTransaccion();
 			BigDecimal valor = trn.getValorContable();
-			String tramaEnvio = trn.getTramaTxRequerimiento();
-			log.info("TRAMAR:" + tramaEnvio);
 			String fechaConciliacionStr = Utilitaria.formatFecha(new Date(), "dd-MM-yyyy");
 
 			Conn = postgresTrbXADS.getConnection();
@@ -1040,8 +1036,8 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			this.odatos.insertarTransaccionalDetalleEnvioRecarga(Conn, codigoMovimiento, numTransaccion, transacId,
 					numeroTransaccion, fechaEnvioRecarga, valor, fechaConciliacionStr);
 
-			this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioRecarga, codigoEstado,
-					codigoProceso, transacId, numTransaccion);
+			this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioRecarga, codigoEstado, codigoProceso,
+					transacId, numTransaccion);
 
 			descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
@@ -1052,7 +1048,6 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			context.setRollbackOnly();
 			throw new TransaccionException();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			descripcion = "Exception-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
