@@ -54,58 +54,79 @@ public class TicketPrint
 	{
 		RegistroServicios registro;
 	    registro=RegistroServicios.registroInstance();
-		ServicioFullCarga servicioLatinTravelGirosPagos = (ServicioFullCarga)registro.getServicioConeccion(tx.getCodigoProveedorProducto()); 
-		VariablesFullCargaLocal varBancoPacifico = servicioLatinTravelGirosPagos.getVariables();
+	    //David 22/09/22
+		//cambio el nombre de la variable servicioLatinTravelGiroPagos por una que tenga mas relacion con FullCarga
+	    ServicioFullCarga servicioRecargasFullCarga = (ServicioFullCarga)registro.getServicioConeccion(tx.getCodigoProveedorProducto()); 
+		VariablesFullCargaLocal varBancoPacifico = servicioRecargasFullCarga.getVariables();
 		List<DatosConfiguracion> mapaDatosConf =  new ArrayList<DatosConfiguracion>();// varBancoPacifico.getDatosConfig();
 		Map<Long, DatosConfiguracionWsdl> mapDatosConexWsdl = new HashMap<Long, DatosConfiguracionWsdl>();// varBancoPacifico.getListaDatosConexionWsdl();
-			
+		
+		//David 22/09/2022
+		//He agregado campos a la BD en la tabla empresa.
 		JAXBContext jaxbContextTemp2 = JAXBContext.newInstance(InfoEmpresa.class);
 		Unmarshaller unmarshallerTemp2 = jaxbContextTemp2.createUnmarshaller();
+		
 		StringReader readerTemp2 = new StringReader(tx.getParametrosInfoEmpresa());
 		InfoEmpresa infoEmpresa = (InfoEmpresa) unmarshallerTemp2.unmarshal(readerTemp2);				
 		
 		DatosConfiguracion datosConf = new DatosConfiguracion();			
 		long IdEmpresa = infoEmpresa.getCodigoEmpresa();
 		long codigoRol = infoEmpresa.getCodigoRol();
+		//David 22/09/2022
+		String nombreEmpresa = infoEmpresa.getNombreEmpresa();
+		
 		for(DatosConfiguracion datCon: mapaDatosConf){
 			if(datCon.getEmpresa()==IdEmpresa){
 				datosConf = datCon;
 			}
 		}
-		
+		//David 22/09/22
+		//Segun la Logica de Recargas se manda en el ticket el valor directo sin especificar IVA
 		Double comision=0.0, ivaLocal=0.12, valorPagado=tx.getValorContable().doubleValue();
 			
 	    ArrayList listaTicketComprobanteFac = new ArrayList<String>();
 
-		listaTicketComprobanteFac.add("CFULL CARGA");
-		listaTicketComprobanteFac.add("D ");
-		
-		listaTicketComprobanteFac.add("IFECHA: &D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
-		listaTicketComprobanteFac.add("========================================");
-		
-		listaTicketComprobanteFac.add("IPAGO:&D"+"RECARGA");
-		listaTicketComprobanteFac.add("IDESCRIPCION:&D"+tx.getTipoProductoStr());
+		listaTicketComprobanteFac.add("C "+nombreEmpresa);//CFULL CARGA //David 22/09/22
+		//listaTicketComprobanteFac.add("D ");
+		//David 23/09/22
+		listaTicketComprobanteFac.add("C "+tx.getTipoProductoStr()); //PARA QUE MUESTRE RECARGA CLARO
+		//AQUI MUESTRA UN NOMBRE, AUN NO SE DE DONDE LO SACA, EN EL EJEMPLO DICE LEONOR PARRA
+		listaTicketComprobanteFac.add("****************************************");
 		listaTicketComprobanteFac.add("ITRANSACCION:&D"+tx.getNumTransaccion());
-		listaTicketComprobanteFac.add("ICUENTA:&D"+tx.getReferenciaCliente());
-		listaTicketComprobanteFac.add("========================================");
+		//AGREGO REFERENCIA PROVEEDOR
+		listaTicketComprobanteFac.add("IREFERENCIA PROVEEDOR:&D"+tx.getReferenciaProveedor());
+		//NUMERO DE TRANSACCION (ES LA MISMA QUE TRANSACCION)
+		listaTicketComprobanteFac.add("ITRANSACCION:&D"+tx.getNumTransaccion());
+		//AGREGO EL NUMERO DE TELEFONO
+		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente());
+		listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
+		//AGREGO EL MONTO A PAGAR SIN IVA
+		listaTicketComprobanteFac.add("ITOTAL:&D"+tx.getValorContable());
+		//listaTicketComprobanteFac.add("========================================");
 		
-		listaTicketComprobanteFac.add("ITRANSACCION:&D"+"RECARGA");
-		listaTicketComprobanteFac.add("IVALOR PAGADO:&D"+tx.getValorContable());
-		listaTicketComprobanteFac.add("IVALOR COMISION:&D"+comision);
-		listaTicketComprobanteFac.add("IVALOR IVA:&D"+ivaLocal);
+		//listaTicketComprobanteFac.add("IPAGO:&D"+"RECARGA");
+		//listaTicketComprobanteFac.add("IDESCRIPCION:&D"+tx.getTipoProductoStr());
+		//listaTicketComprobanteFac.add("ITRANSACCION:&D"+tx.getNumTransaccion());
+		//listaTicketComprobanteFac.add("ICUENTA:&D"+tx.getReferenciaCliente());
+		//listaTicketComprobanteFac.add("========================================");
+		
+		//listaTicketComprobanteFac.add("ITRANSACCION:&D"+"RECARGA");
+		//listaTicketComprobanteFac.add("IVALOR PAGADO:&D"+tx.getValorContable());
+		//listaTicketComprobanteFac.add("IVALOR COMISION:&D"+comision);
+		//listaTicketComprobanteFac.add("IVALOR IVA:&D"+ivaLocal);
 		
 		Double totalLocal=((valorPagado+comision)*ivaLocal)+(valorPagado+comision);
 		String resultIVA = String.format("%.2f", totalLocal);
 		
-		listaTicketComprobanteFac.add("IVALOR TOTAL:&D"+resultIVA);
-		listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
-		listaTicketComprobanteFac.add(" ");
-		listaTicketComprobanteFac.add(" ");
-		listaTicketComprobanteFac.add(" ");
-		listaTicketComprobanteFac.add("========================================");
-		listaTicketComprobanteFac.add("C* REALIZA EL PAGO DE TUS SERVICIOS");
-		listaTicketComprobanteFac.add("CBASICOS, SRI, IESS, TRANSITO Y MAS! *");
-		listaTicketComprobanteFac.add("========================================");
+		//listaTicketComprobanteFac.add("IVALOR TOTAL:&D"+resultIVA);
+		//listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
+		//listaTicketComprobanteFac.add(" ");
+		//listaTicketComprobanteFac.add(" ");
+		//listaTicketComprobanteFac.add(" ");
+		//listaTicketComprobanteFac.add("========================================");
+		//listaTicketComprobanteFac.add("C* REALIZA EL PAGO DE TUS SERVICIOS");
+		//listaTicketComprobanteFac.add("CBASICOS, SRI, IESS, TRANSITO Y MAS! *");
+		//listaTicketComprobanteFac.add("========================================");
 
 		//listaTicketComprobanteFac.add("IREF PROVEEDOR:&D"+tx.getReferenciaProveedor());
 
