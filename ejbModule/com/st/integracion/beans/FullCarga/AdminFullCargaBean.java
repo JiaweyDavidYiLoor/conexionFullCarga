@@ -1114,7 +1114,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			descripcion = "Exception-AdminInteraguaBean-respuestaRecibidaRecarga: actualizando transaccional y actualizando detalle";
+			descripcion = "Exception-AdminFullCargaBean-respuestaRecibidaRecarga: actualizando transaccional y actualizando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
 			this.context.setRollbackOnly();
@@ -1150,7 +1150,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		String descripcion = null;
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
 		Connection Conn = null;
-		descripcion = "AdminInteraguaBean-respuestaRecibidaAnulacion:Inicio";
+		descripcion = "AdminFullCargaBean-respuestaRecibidaAnulacion:Inicio";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		try {
 			trn = this.utl.procesarRespuesta(trn);
@@ -1234,77 +1234,6 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		}
 		return trn;
 
-		/*
-		 * java.sql.Connection Conn = null; String descripcion = null; TransaccionBwise
-		 * teRecibido = (TransaccionBwise) tx; descripcion =
-		 * "Metodo: respuestaRecibidaAnulacion; Inicio";
-		 * AdminBwiseBean.log.info(this.utl.mensajeLogBroadnet(teRecibido,
-		 * descripcion));
-		 * 
-		 * try { teRecibido = this.utl.procesarRespuesta(teRecibido); // Revisar
-		 * Dependencias a Cambiar TransaccionBwise trn = teRecibido;
-		 * 
-		 * Date fechaRespuestaAnulacion = trn.getFechaRespuestaAnulacion(); int
-		 * codigoEstado = trn.getCodigoEstado(); int codigoProceso =
-		 * trn.getCodigoProceso();
-		 * 
-		 * Long codigoEstadoConexion =(long) codigoEstado ;
-		 * trn.setCodigoEstadoConexion(codigoEstadoConexion);
-		 * 
-		 * Long transacId = trn.getTransacId(); Long codigoMovimiento =
-		 * trn.getCodigoMovimiento(); Long transacIdEnv = transacId; //Long tpdu =
-		 * trn.getTpduRsp();
-		 * 
-		 * 
-		 * String messageTypeIdRsp = trn.getMessageTypeIdRsp(); String
-		 * primaryAccountNumberRsp = trn.getPrimaryAccountNumberRsp(); String
-		 * processingCodeRsp = trn.getProcessingCodeRsp(); String transactionAmountRsp =
-		 * trn.getTransactionAmountRsp(); String systemTraceAuditNumberRsp =
-		 * trn.getSystemTraceAuditNumberRsp(); String localTransactionTimeRsp=
-		 * trn.getLocalTransactionTimeRsp();
-		 * 
-		 * String localTransactionDateRsp = trn.getLocalTransactionDateRsp(); String
-		 * settlementDateRsp = trn.getSettlementDateRsp(); String posEntryModeRsp =
-		 * trn.getPosEntryModeRsp(); String networkInternationalIdRsp =
-		 * trn.getNetworkInternationalIdRsp(); String posConditionCodeRsp =
-		 * trn.getPosConditionCodeRsp(); //String autorizationNumberRsp =
-		 * trn.getAutorizationNumberRsp(); String responseCodeRsp =
-		 * trn.getResponseCodeRsp(); String terminalIdRsp = trn.getTerminalIdRsp();
-		 * String merchantIdRsp = trn.getMerchantIdRsp(); String adicionalData112Rsp =
-		 * trn.getAdicionalData112Rsp(); String adicionalData114Rsp =
-		 * trn.getAdicionalData114Rsp(); //String adicionalData116RSp =
-		 * trn.getAdicionalData116Rsp();
-		 * 
-		 * Conn = this.postgresBwiseXADS.getConnection();
-		 * 
-		 * this.odatos.actualizarTransaccionalRespuestaAnulacionFinal(Conn,
-		 * codigoEstado, codigoProceso, codigoMovimiento);
-		 * 
-		 * this.odatos.actualizarTransaccionalDetalleRespuestaAnulacionFinal(Conn,
-		 * codigoMovimiento,transacIdEnv, //tpdu, messageTypeIdRsp,
-		 * primaryAccountNumberRsp, processingCodeRsp, transactionAmountRsp,
-		 * systemTraceAuditNumberRsp,
-		 * localTransactionTimeRsp,localTransactionDateRsp,settlementDateRsp,
-		 * posEntryModeRsp,networkInternationalIdRsp,posConditionCodeRsp,
-		 * responseCodeRsp,terminalIdRsp,merchantIdRsp,
-		 * adicionalData112Rsp,adicionalData114Rsp); descripcion =
-		 * "Metodo: respuestaRecibidaAnulacion; actualizando transaccional y actualizando detalle"
-		 * ; AdminBwiseBean.log.info(this.utl.mensajeLogBroadnet(trn, descripcion));
-		 * responderCola(teRecibido);
-		 * 
-		 * } catch (SQLException e) { // TODO Auto-generated catch block descripcion =
-		 * "Metodo: respuestaRecibidaAnulacion; SQLException: actualizando transaccional y actualizando detalle"
-		 * ; AdminBwiseBean.log.info(this.utl.mensajeLogBroadnet(teRecibido,
-		 * descripcion)); e.printStackTrace(); this.context.setRollbackOnly(); throw new
-		 * TransaccionException(e); } catch (Exception e) { // TODO Auto-generated catch
-		 * block descripcion =
-		 * "Metodo: respuestaRecibidaAnulacion; Exception: actualizando transaccional y actualizando detalle"
-		 * ; AdminBwiseBean.log.info(this.utl.mensajeLogBroadnet(teRecibido,
-		 * descripcion)); e.printStackTrace(); this.context.setRollbackOnly(); throw new
-		 * TransaccionException(e); } finally { if (Conn != null) { try { Conn.close();
-		 * } catch (SQLException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } } } return teRecibido;
-		 */
 	}
 
 	@Override
@@ -1354,7 +1283,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 	@Override
 	protected void transaccionNoEnviadaConsultaCompraPin(Transaccion tx) throws TransaccionException {
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
-		String descripcion = "AdminInteraguaBean-transaccionNoEnviadaConsultaRecarga: Inicio; no se hace nada en este metodo";
+		String descripcion = "AdminFullCargaBean-transaccionNoEnviadaConsultaRecarga: Inicio; no se hace nada en este metodo";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		int codigoEstado = 57; // COMPRA PIN EN PROCESO
 		int codigoProceso = 49; // Peticion COMPRA PIN

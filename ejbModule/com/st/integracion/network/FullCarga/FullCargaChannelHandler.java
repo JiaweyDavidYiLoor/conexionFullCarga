@@ -111,6 +111,7 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 			e.printStackTrace();
 		}
 		String tipoRespuesta = respuestaProveedor.getResponseCode();
+		String errMensaje = respuestaProveedor.getErrMessage();
 
 		if (tipoRespuesta.compareTo("00") == 0) {
 			tx.setTipoOperacion(TipoOperacion.RECARGA);
@@ -119,10 +120,15 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setFechaRespuestaRecarga(new Date());
 			tx.setReferenciaSigma(Integer.toString(respuestaProveedor.getReferenciaSigma()));
-		}  else {
+		}  else if(tipoRespuesta.compareTo("51") == 0){
 			tx.setCodigoRetorno(tipoRespuesta);
+			tx.setMensajeRetorno(errMensaje);
+		} else {
+			tx.setCodigoRetorno("TRMALFOR");
 			tx.setMensajeRetorno("Formato Incorrecto en Trama de Respuesta");
 		}
+		
+		tx.setTramaTxRespuesta(respuestaProveedorXML);
 
 		return tx;
 	}

@@ -96,12 +96,14 @@ public class TicketPrint
 		//AGREGO REFERENCIA PROVEEDOR
 		listaTicketComprobanteFac.add("IREFERENCIA PROVEEDOR:&D"+tx.getReferenciaProveedor());
 		//NUMERO DE TRANSACCION (ES LA MISMA QUE TRANSACCION)
-		listaTicketComprobanteFac.add("ITRANSACCION:&D"+tx.getNumTransaccion());
+		listaTicketComprobanteFac.add("INUMERO TRANSACCION:&D"+tx.getNumTransaccion());
 		//AGREGO EL NUMERO DE TELEFONO
 		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente());
 		listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
 		//AGREGO EL MONTO A PAGAR SIN IVA
 		listaTicketComprobanteFac.add("ITOTAL:&D"+tx.getValorContable());
+		listaTicketComprobanteFac.add(" ");
+		listaTicketComprobanteFac.add(" ");
 		//listaTicketComprobanteFac.add("========================================");
 		
 		//listaTicketComprobanteFac.add("IPAGO:&D"+"RECARGA");
@@ -115,8 +117,8 @@ public class TicketPrint
 		//listaTicketComprobanteFac.add("IVALOR COMISION:&D"+comision);
 		//listaTicketComprobanteFac.add("IVALOR IVA:&D"+ivaLocal);
 		
-		Double totalLocal=((valorPagado+comision)*ivaLocal)+(valorPagado+comision);
-		String resultIVA = String.format("%.2f", totalLocal);
+//		Double totalLocal=((valorPagado+comision)*ivaLocal)+(valorPagado+comision);
+//		String resultIVA = String.format("%.2f", totalLocal);
 		
 		//listaTicketComprobanteFac.add("IVALOR TOTAL:&D"+resultIVA);
 		//listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
