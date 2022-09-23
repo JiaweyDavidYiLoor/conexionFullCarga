@@ -23,5 +23,5 @@ public interface VariablesFullCargaLocal {
 	public List<EmpresaClienteRoll> getListaEmpresaClienteRoll();
 	public Map<Long, DatosConfiguracionWsdl> getDatosConfiguracionWsdl();
 	public List<Productos> getListarEmpresaProductos();
-
+	
 }

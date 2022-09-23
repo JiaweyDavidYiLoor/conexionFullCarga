@@ -18,7 +18,6 @@ import javax.management.ObjectName;
 
 import org.apache.log4j.Logger;
 
-
 import com.st.integracion.beans.AdminTransaccionLocal;
 import com.st.integracion.beans.FullCarga.AdminFullCargaLocal;
 import com.st.integracion.dto.FullCarga.ConfiguracionCorreo;
@@ -120,7 +119,6 @@ public class VariablesFullCarga implements VariablesFullCargaLocal, VariablesFul
 		
 		List<EmpresaClienteRoll> listaEmpresaCliRoll = aPul.listarEmpresaClienteRoll();
 		this.setListaEmpresaClienteRoll(listaEmpresaCliRoll);
-		
 		
 		//Map<Long, Producto> listaInterno=aPul.listarProductosInternoBancoPacifico();
 		//this.setListaProductosInterno(listaInterno);

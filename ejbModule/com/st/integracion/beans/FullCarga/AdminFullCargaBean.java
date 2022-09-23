@@ -910,7 +910,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 
 			if (codigoEstado == 1) // Recarga en proceso
 			{
-				descripcion = "Recarga en Proceso-AdminInteragua-responderCola: llamada a consultarRecarga de ServicioConeccion | No. transaccion :"
+				descripcion = "Recarga en Proceso-AdminFullCarga-responderCola: llamada a consultarRecarga de ServicioConeccion | No. transaccion :"
 						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
 				AdminFullCargaBean.log.info(trn + descripcion);
 				ServicioConeccion sc = RegistroServicios.registroInstance()

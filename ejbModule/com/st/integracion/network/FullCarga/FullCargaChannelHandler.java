@@ -32,14 +32,12 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 	public static final String HANDLER_NAME = "TrbChannelHandler";
 	private static final Logger log = Logger.getLogger(FullCargaChannelHandler.class);
 	private final DocumentBuilder builder;
-	private Utilitaria utl = new Utilitaria();
 	private static final Set<FullCargaChannelListener> listeners = new CopyOnWriteArraySet<FullCargaChannelListener>();
 
 	public FullCargaChannelHandler() throws ParserConfigurationException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setCoalescing(true);
 		this.builder = factory.newDocumentBuilder();
-		// this.builder=DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setFechaRespuestaRecarga(new Date());
 			tx.setReferenciaSigma(Integer.toString(respuestaProveedor.getReferenciaSigma()));
-		}  else if(tipoRespuesta.compareTo("51") == 0){
+		}  else if(tipoRespuesta.compareTo("51") == 0 || tipoRespuesta.compareTo("52") == 0 ){
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setMensajeRetorno(errMensaje);
 		} else {

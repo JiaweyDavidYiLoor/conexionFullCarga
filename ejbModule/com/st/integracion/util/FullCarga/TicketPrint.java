@@ -3,6 +3,8 @@ package com.st.integracion.util.FullCarga;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import javax.xml.bind.Unmarshaller;
 
 import com.st.integracion.dto.FullCarga.DatosConfiguracion;
 import com.st.integracion.dto.FullCarga.DatosConfiguracionWsdl;
+import com.st.integracion.dto.FullCarga.Empresa;
 import com.st.integracion.dto.FullCarga.OcuDataCursor;
 import com.st.integracion.dto.FullCarga.Producto;
 import com.st.integracion.dto.FullCarga.TransaccionFullCarga;
@@ -50,7 +53,7 @@ public class TicketPrint
 		this.tx = trn;
 	}
 	
-	public ArrayList armarTicketImpresion(BigDecimal monto, BigDecimal iva) throws JAXBException
+	public ArrayList armarTicketImpresion(BigDecimal monto, BigDecimal iva) throws JAXBException, ParseException
 	{
 		RegistroServicios registro;
 	    registro=RegistroServicios.registroInstance();
@@ -80,6 +83,7 @@ public class TicketPrint
 				datosConf = datCon;
 			}
 		}
+
 		//David 22/09/22
 		//Segun la Logica de Recargas se manda en el ticket el valor directo sin especificar IVA
 		Double comision=0.0, ivaLocal=0.12, valorPagado=tx.getValorContable().doubleValue();
@@ -99,32 +103,18 @@ public class TicketPrint
 		listaTicketComprobanteFac.add("INUMERO TRANSACCION:&D"+tx.getNumTransaccion());
 		//AGREGO EL NUMERO DE TELEFONO
 		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente());
-		listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
+		
+//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		String fecha = format.format(new Date());
+//		
+//		Date fechaFormeateada = format.parse(fecha);
+		
+		listaTicketComprobanteFac.add("IFECHA:&D"+ Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
 		//AGREGO EL MONTO A PAGAR SIN IVA
 		listaTicketComprobanteFac.add("ITOTAL:&D"+tx.getValorContable());
 		listaTicketComprobanteFac.add(" ");
 		listaTicketComprobanteFac.add(" ");
-		//listaTicketComprobanteFac.add("========================================");
 		
-		//listaTicketComprobanteFac.add("IPAGO:&D"+"RECARGA");
-		//listaTicketComprobanteFac.add("IDESCRIPCION:&D"+tx.getTipoProductoStr());
-		//listaTicketComprobanteFac.add("ITRANSACCION:&D"+tx.getNumTransaccion());
-		//listaTicketComprobanteFac.add("ICUENTA:&D"+tx.getReferenciaCliente());
-		//listaTicketComprobanteFac.add("========================================");
-		
-		//listaTicketComprobanteFac.add("ITRANSACCION:&D"+"RECARGA");
-		//listaTicketComprobanteFac.add("IVALOR PAGADO:&D"+tx.getValorContable());
-		//listaTicketComprobanteFac.add("IVALOR COMISION:&D"+comision);
-		//listaTicketComprobanteFac.add("IVALOR IVA:&D"+ivaLocal);
-		
-//		Double totalLocal=((valorPagado+comision)*ivaLocal)+(valorPagado+comision);
-//		String resultIVA = String.format("%.2f", totalLocal);
-		
-		//listaTicketComprobanteFac.add("IVALOR TOTAL:&D"+resultIVA);
-		//listaTicketComprobanteFac.add("IFECHA:&D"+Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
-		//listaTicketComprobanteFac.add(" ");
-		//listaTicketComprobanteFac.add(" ");
-		//listaTicketComprobanteFac.add(" ");
 		//listaTicketComprobanteFac.add("========================================");
 		//listaTicketComprobanteFac.add("C* REALIZA EL PAGO DE TUS SERVICIOS");
 		//listaTicketComprobanteFac.add("CBASICOS, SRI, IESS, TRANSITO Y MAS! *");
