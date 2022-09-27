@@ -63,6 +63,7 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
 
 	private BigDecimal importe;
 	private String referenciaSigma;
+	private String referenciaOperadora;
 
 	@Override
 	public int compareTo(TransaccionFullCarga that) {
@@ -177,6 +178,14 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
 		tx.setReferenciaSigma(this.getReferenciaSigma());
 		tx.setImporte(this.getImporte());
 		return tx;
+	}
+	
+	public String getReferenciaOperadora() {
+		return referenciaOperadora;
+	}
+
+	public void setReferenciaOperadora(String referenciaOperadora) {
+		this.referenciaOperadora = referenciaOperadora;
 	}
 
 	public BigDecimal getImporte() {

@@ -61,41 +61,6 @@ public class Utilitaria {
 		return retorno;
 	}
 
-	private TransaccionFullCarga procesarRespuestaComprarPinInternet(TransaccionFullCarga trn) {
-		TransaccionFullCarga retorno = null;
-		String codigoErrorRespuesta = trn.getCodigoRetorno();// trn.getCodigoRsp();
-
-		if (codigoErrorRespuesta.compareTo("00") == 0) {
-			trn.setCodigoEstado(72); // Compra de pin de internet realizada
-			trn.setCodigoProceso(62);// Respuesta Compra Pin Internet
-			// trn.setReferenciaProveedor(trn.getCuponPagado());
-			/* Agregando el campo <ext> al xml de respuesta */
-			// trn.setDescripcion("Transacci�n exitosa");
-			trn.setEstadoFK(3L);
-
-		} else if (codigoErrorRespuesta.compareTo("TRMALFOR") == 0) {
-			trn.setCodigoEstado(71); // Compra de pin de internet pendiente
-			trn.setCodigoProceso(61);// Respuesta Compra Pin Internet pendiente
-			// trn.setReferenciaProveedor("NAK");
-
-			trn.setDescripcion(trn.getMensajeRetorno());
-			// trn.setCodigoProceso(62);// Respuesta compra de pin internet
-			// trn.setCodigoEstado(73);//Compra de pin de internet no realizada
-			trn.setEstadoFK(1L);
-		} else {
-			trn.setReferenciaProveedor("NAK");
-
-			trn.setDescripcion(trn.getMensajeRetorno());
-			trn.setCodigoProceso(62);// Respuesta compra de pin internet
-			trn.setCodigoEstado(73);// Compra de pin de internet no realizada
-			trn.setEstadoFK(2L);
-
-		}
-		retorno = trn;
-		return retorno;
-
-	}
-
 	private TransaccionFullCarga procesarRespuestaRecarga(TransaccionFullCarga trn) {
 		TransaccionFullCarga retorno = null;
 		String codigoErrorRespuesta = trn.getCodigoRetorno();// trn.getCodigoRsp();

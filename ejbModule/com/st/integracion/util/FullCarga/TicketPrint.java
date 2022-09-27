@@ -4,7 +4,6 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,14 +16,11 @@ import javax.xml.bind.Unmarshaller;
 
 import com.st.integracion.dto.FullCarga.DatosConfiguracion;
 import com.st.integracion.dto.FullCarga.DatosConfiguracionWsdl;
-import com.st.integracion.dto.FullCarga.Empresa;
-import com.st.integracion.dto.FullCarga.OcuDataCursor;
 import com.st.integracion.dto.FullCarga.Producto;
 import com.st.integracion.dto.FullCarga.TransaccionFullCarga;
 import com.st.integracion.servicios.RegistroServicios;
 import com.st.integracion.servicios.FullCarga.ServicioFullCarga;
 import com.st.integracion.servicios.FullCarga.VariablesFullCargaLocal;
-import com.st.integracion.util.FullCarga.Utilitaria;
 import com.st.integracion.ws.FullCarga.InfoEmpresa;
 import com.st.integracion.ws.FullCarga.ParametrosRespuesta;
 
@@ -90,7 +86,7 @@ public class TicketPrint
 			
 	    ArrayList listaTicketComprobanteFac = new ArrayList<String>();
 
-		listaTicketComprobanteFac.add("C "+nombreEmpresa);//CFULL CARGA //David 22/09/22
+		listaTicketComprobanteFac.add("C "+nombreEmpresa);
 		//listaTicketComprobanteFac.add("D ");
 		//David 23/09/22
 		listaTicketComprobanteFac.add("C "+tx.getTipoProductoStr()); //PARA QUE MUESTRE RECARGA CLARO
@@ -100,7 +96,7 @@ public class TicketPrint
 		//AGREGO REFERENCIA PROVEEDOR
 		listaTicketComprobanteFac.add("IREFERENCIA PROVEEDOR:&D"+tx.getReferenciaProveedor());
 		//NUMERO DE TRANSACCION (ES LA MISMA QUE TRANSACCION)
-		listaTicketComprobanteFac.add("INUMERO TRANSACCION:&D"+tx.getNumTransaccion());
+		listaTicketComprobanteFac.add("IREFERENCIA OPERADORA:&D"+tx.getReferenciaOperadora());
 		//AGREGO EL NUMERO DE TELEFONO
 		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente());
 		
