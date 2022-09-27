@@ -61,6 +61,7 @@ public class FullCargaTrbListener extends TimerTask implements FullCargaChannelL
 			if(respuesta.getCodigoRetorno().equals("00")) {
 				this.tx.setFechaRespuestaRecarga(new Date());
 				this.tx.setReferenciaProveedor(respuesta.getReferenciaSigma());
+				this.tx.setReferenciaOperadora(respuesta.getReferenciaOperadora());
 				log.info("TxFullCargaListener-recarga-respondida: " + this.tx + descripcion);
 			}else if(respuesta.getCodigoRetorno().equals("51")) {
 				log.info("TxFullCargaListener-recarga-respondida: " + this.tx + descripcion);
