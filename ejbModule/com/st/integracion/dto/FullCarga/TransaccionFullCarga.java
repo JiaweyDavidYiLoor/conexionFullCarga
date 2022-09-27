@@ -176,6 +176,7 @@ public class TransaccionFullCarga extends Transaccion implements Comparable<Tran
 		tx.setValorRecibido(this.getValorRecibido());
 		tx.setTipoProducto(this.getTipoProducto());
 		tx.setReferenciaSigma(this.getReferenciaSigma());
+		tx.setReferenciaOperadora(this.getReferenciaOperadora());
 		tx.setImporte(this.getImporte());
 		return tx;
 	}
