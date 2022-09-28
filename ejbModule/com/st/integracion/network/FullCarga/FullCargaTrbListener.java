@@ -43,7 +43,7 @@ public class FullCargaTrbListener extends TimerTask implements FullCargaChannelL
 			return;
 
 		if (future.isSuccess()) {
-			log.info("trama enviada al proveedor: " + this.tx);
+			log.info(tx.getNumeroTransaccion() +"trama enviada al proveedor: " + this.tx);
 			this.servicio.transaccionEnviadaProveedor(this);
 			this.tx.setTramaTxRequerimiento(this.tx.getTramaTxRequerimiento());
 		} else {

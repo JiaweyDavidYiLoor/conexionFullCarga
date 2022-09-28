@@ -12,6 +12,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -493,14 +495,18 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 			try {
 				switch (op) {
 				case RECARGA:
-					//NO FUNCIONA PARA 10
 					BigDecimal valorContable = tx.getValorContable();
 					String valor = String.valueOf(valorContable);
-					String[] valorArray = valor.split("[.]");//[0, 25]
+					String[] valorArray = valor.split("[.]");
+					
 					if(valorArray[0].contains("0")) {
-						tx.setImporte(valorContable.multiply(new BigDecimal(1)));
+						String valores = String.valueOf(valorContable.multiply(new BigDecimal(100)).setScale(0));
+						tx.setImporte(new BigDecimal(valores));
 					}else {
-						tx.setImporte(valorContable.multiply(new BigDecimal(100)).setScale(0)); //325.00
+					
+						valor.replace(".", "");
+						//tx.setImporte(new BigDecimal(valor));
+						tx.setImporte(valorContable.multiply(new BigDecimal(100)).setScale(0)); //30 -> 3000
 					}
 					break;
 
@@ -858,7 +864,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 		builderC.append("</soapenv:Body>\r");
 		builderC.append("</soapenv:Envelope>");
 		tx.setTramaTxRequerimiento(builderC.toString());
-		log.info("EasyCashChannelHandler-buildHttpRequest: enviando mensaje: " + builderC);
+		log.info("FullCargaChannelHandler-buildHttpRequest: " + tx.getNumeroTransaccion() + " enviando mensaje: " + builderC);
 		String uri = datosConf.getPathUrlWs() + "SigmaWSLayer/SigmaService";
 		ByteBuf buf = Unpooled.copiedBuffer(builderC.toString(), Charsets.UTF_8);
 		FullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, uri, buf);

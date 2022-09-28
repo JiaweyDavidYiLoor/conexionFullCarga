@@ -29,7 +29,7 @@ import io.netty.util.CharsetUtil;
 
 public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
 
-	public static final String HANDLER_NAME = "TrbChannelHandler";
+	public static final String HANDLER_NAME = "FullCargaChannelHandler";
 	private static final Logger log = Logger.getLogger(FullCargaChannelHandler.class);
 	private final DocumentBuilder builder;
 	private static final Set<FullCargaChannelListener> listeners = new CopyOnWriteArraySet<FullCargaChannelListener>();
@@ -137,7 +137,7 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 	public static void addChannelListener(FullCargaChannelListener listener) {
 		listeners.add(listener);
 		if (listeners.size() > 0)
-			log.info(String.format("TrbChannelHandler-addChannelListener: actualmente hay %d listeners en el handler",
+			log.info(String.format("FullCargaChannelHandler-addChannelListener: actualmente hay %d listeners en el handler",
 					listeners.size()));
 	}
 
@@ -145,7 +145,7 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 		listeners.remove(listener);
 		if (listeners.size() > 0)
 			log.info(
-					String.format("TrbChannelHandler-removeChannelListener: actualmente hay %d listeners en el handler",
+					String.format("FullCargaChannelHandler-removeChannelListener: actualmente hay %d listeners en el handler",
 							listeners.size()));
 	}
 
