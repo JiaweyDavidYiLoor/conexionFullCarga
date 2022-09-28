@@ -98,7 +98,7 @@ public class TicketPrint
 		//NUMERO DE TRANSACCION (ES LA MISMA QUE TRANSACCION)
 		listaTicketComprobanteFac.add("IREFERENCIA OPERADORA:&D"+tx.getReferenciaOperadora());
 		//AGREGO EL NUMERO DE TELEFONO
-		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente());
+		listaTicketComprobanteFac.add("INUMERO:&D"+tx.getReferenciaCliente().replace(" ",""));
 		
 //		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //		String fecha = format.format(new Date());

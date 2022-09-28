@@ -943,7 +943,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 				log.info("Ticket Comprobante recarga =" + ticketComprobanteStr);
 
 				mvmNuevo.setMvmReferenciaProveedor(referenciaProveedor);
-				descripcion = "Recarga Realizada-AdminBancoPacifico-responderCola: Enviando Tarjetas_vendidas a la cola de respuesta| No. transaccion :"
+				descripcion = "Recarga Realizada AdminFullCarga-responderCola: Enviando recarga a la cola de respuesta| No. transaccion :"
 						+ trn.getNumTransaccion() + " No. Serie : " + trn.getReferenciaCliente();
 				AdminFullCargaBean.log.info(trn + descripcion);
 
@@ -1015,7 +1015,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		Connection Conn = null;
 		String descripcion = null;
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
-		descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: Inicio";
+		descripcion = "AdminFullCargaBean-TransaccionEnviadaRecarga: Inicio";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		try {
 			Date fechaEnvioRecarga = trn.getFechaEnvioRecarga();
@@ -1039,16 +1039,16 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			this.odatos.actualizarTransaccionalEnvioRecarga(Conn, fechaEnvioRecarga, codigoEstado, codigoProceso,
 					transacId, numTransaccion);
 
-			descripcion = "AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
+			descripcion = "AdminFullCargaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 		} catch (SQLException e) {
-			descripcion = "SQLException-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
+			descripcion = "SQLException-AdminFullCargaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
 			context.setRollbackOnly();
 			throw new TransaccionException();
 		} catch (Exception e) {
-			descripcion = "Exception-AdminInteraguaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
+			descripcion = "Exception-FullCargaBean-TransaccionEnviadaRecarga: actualizando transaccional e insertando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
 			this.context.setRollbackOnly();
@@ -1078,7 +1078,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 		String descripcion = null;
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
 		Connection Conn = null;
-		descripcion = "AdminInteraguaBean-respuestaRecibidaRecarga: Inicio";
+		descripcion = "AdminFullCargaBean-respuestaRecibidaRecarga: Inicio";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		try {
 
@@ -1205,20 +1205,20 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 			 * numeroTransaccion, codigoMovimiento, transacId);
 			 */
 
-			descripcion = "AdminInteragua-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle | Codigo Movimiento: "
+			descripcion = "AdminFullCarga-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle | Codigo Movimiento: "
 					+ trn.getCodigoMovimiento() + " Numero Serie : " + trn.getReferenciaCliente();
 			AdminFullCargaBean.log.info(trn + descripcion);
 			responderCola(trn);
 
 		} catch (SQLException e) {
-			descripcion = "SQLException-AdminInteragua-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle";
+			descripcion = "SQLException-AdminFullCarga-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
 			context.setRollbackOnly();
 			throw new TransaccionException(e);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			descripcion = "Exception-AdminInteragua-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle";
+			descripcion = "Exception-AdminFullCarga-respuestaRecibidaAnulacion: actualizando transaccional y actualizando detalle";
 			AdminFullCargaBean.log.info(trn + descripcion);
 			e.printStackTrace();
 			this.context.setRollbackOnly();
@@ -1266,7 +1266,7 @@ public class AdminFullCargaBean extends AdminTransaccionBean implements AdminFul
 	@Override
 	protected void transaccionNoEnviadaConsultaRecarga(Transaccion tx) throws TransaccionException {
 		TransaccionFullCarga trn = (TransaccionFullCarga) tx;
-		String descripcion = "AdminInteraguaBean-transaccionNoEnviadaConsultaRecarga: Inicio; no se hace nada en este metodo";
+		String descripcion = "AdminFullCargaBean-transaccionNoEnviadaConsultaRecarga: Inicio; no se hace nada en este metodo";
 		AdminFullCargaBean.log.info(trn + descripcion);
 		int codigoEstado = 1; // Recarga en Proceso
 		int codigoProceso = 1; // Peticion Recarga

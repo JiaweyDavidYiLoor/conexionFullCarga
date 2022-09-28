@@ -316,7 +316,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 		cantReqRealizados = tx.getCantReqRealizados();
 		if (cantReqRealizados == null) {
 			log.info(
-					"ServicioEasyCash-getTrigger: cantRequerimientosRealizados fue null : tx.getCantReqRealizados =  null");
+					"ServicioFullCarga-getTrigger: cantRequerimientosRealizados fue null : tx.getCantReqRealizados =  null");
 			cantReqRealizados = 0;
 		} else {
 			try {
@@ -843,7 +843,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 				builderC.append("</parametrosOperacion>\r");
 				builderC.append("<parametrosOperacion>\r");
 				builderC.append("<indice>" + 2 + "</indice>\r");
-				builderC.append("<valor>" + tx.getReferenciaCliente() + "</valor>\r");
+				builderC.append("<valor>" + tx.getReferenciaCliente().replace(" ", "") + "</valor>\r");
 				builderC.append("</parametrosOperacion>\r");
 				builderC.append("</net:venta>\r");	
 			}
@@ -851,7 +851,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 			{
 				builderC.append("<parametrosOperacion>\r");
 				builderC.append("<indice>" + 1 + "</indice>\r");
-				builderC.append("<valor>" + tx.getReferenciaCliente() + "</valor>\r");
+				builderC.append("<valor>" + tx.getReferenciaCliente().replace(" ", "") + "</valor>\r");
 				builderC.append("</parametrosOperacion>\r");
 				builderC.append("<parametrosOperacion>\r");
 				builderC.append("<indice>" + 2 + "</indice>\r");
