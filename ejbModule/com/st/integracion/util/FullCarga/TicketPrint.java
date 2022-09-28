@@ -107,7 +107,7 @@ public class TicketPrint
 		
 		listaTicketComprobanteFac.add("IFECHA:&D"+ Utilitaria.formatFecha(new Date(),"yyyy-MM-dd HH:mm:ss"));
 		//AGREGO EL MONTO A PAGAR SIN IVA
-		listaTicketComprobanteFac.add("ITOTAL:&D"+tx.getValorContable());
+		listaTicketComprobanteFac.add("ITOTAL:&D"+tx.getValorContable().setScale(2, RoundingMode.HALF_UP));
 		listaTicketComprobanteFac.add(" ");
 		listaTicketComprobanteFac.add(" ");
 		
