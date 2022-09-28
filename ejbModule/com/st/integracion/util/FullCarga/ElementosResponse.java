@@ -17,9 +17,9 @@ public class ElementosResponse {
 	@XmlElement(required = false)
 	protected String responseCode;
 	@XmlElement(required = false)
-	protected int refOperador;
+	protected Long refOperador;
 	@XmlElement(required = false)
-	protected int referenciaSigma;
+	protected Long referenciaSigma;
 	@XmlElement(required = false)
 	protected Double importe;
 	@XmlElement(required = false)
@@ -38,19 +38,19 @@ public class ElementosResponse {
 		this.responseCode = responseCode;
 	}
 
-	public int getRefOperador() {
+	public Long getRefOperador() {
 		return refOperador;
 	}
 
-	public void setRefOperador(int refOperador) {
+	public void setRefOperador(Long refOperador) {
 		this.refOperador = refOperador;
 	}
 
-	public int getReferenciaSigma() {
+	public Long getReferenciaSigma() {
 		return referenciaSigma;
 	}
 
-	public void setReferenciaSigma(int referenciaSigma) {
+	public void setReferenciaSigma(Long referenciaSigma) {
 		this.referenciaSigma = referenciaSigma;
 	}
 
