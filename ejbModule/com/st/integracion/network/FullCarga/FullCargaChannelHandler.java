@@ -119,8 +119,8 @@ public class FullCargaChannelHandler extends SimpleChannelInboundHandler<FullHtt
 			tx.setDescripcion(tipoRespuesta);
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setFechaRespuestaRecarga(new Date());
-			tx.setReferenciaOperadora(Integer.toString(respuestaProveedor.getRefOperador()));
-			tx.setReferenciaSigma(Integer.toString(respuestaProveedor.getReferenciaSigma()));
+			tx.setReferenciaOperadora(String.valueOf(respuestaProveedor.getRefOperador()));
+			tx.setReferenciaSigma(String.valueOf(respuestaProveedor.getReferenciaSigma()));
 		}  else if(codigoError >= 51 && codigoError <=70) {
 			tx.setCodigoRetorno(tipoRespuesta);
 			tx.setMensajeRetorno(errMensaje);
