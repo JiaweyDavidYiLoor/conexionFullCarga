@@ -495,7 +495,13 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 				case RECARGA:
 
 					BigDecimal valorContable = tx.getValorContable();
-					tx.setImporte(valorContable.multiply(new BigDecimal(100)));
+					String valor = String.valueOf(valorContable);
+					String[] valorArray = valor.split("[.]");//[0, 25]
+					if(valorArray[0].contains("0")) {
+						tx.setImporte(valorContable.multiply(new BigDecimal(1)));
+					}else {
+						tx.setImporte(valorContable.multiply(new BigDecimal(100)).setScale(0)); //325.00
+					}
 					break;
 
 				default:
