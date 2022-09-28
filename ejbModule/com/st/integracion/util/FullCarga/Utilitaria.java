@@ -78,7 +78,6 @@ public class Utilitaria {
 			trn.setEstadoFK(1L);
 		} else {
 			trn.setReferenciaProveedor("NAK");
-
 			trn.setDescripcion(trn.getMensajeRetorno());
 			trn.setCodigoProceso(3);
 			trn.setCodigoEstado(3);
