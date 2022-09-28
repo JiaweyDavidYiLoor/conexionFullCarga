@@ -493,7 +493,7 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 			try {
 				switch (op) {
 				case RECARGA:
-
+					//NO FUNCIONA PARA 10
 					BigDecimal valorContable = tx.getValorContable();
 					String valor = String.valueOf(valorContable);
 					String[] valorArray = valor.split("[.]");//[0, 25]
@@ -828,15 +828,31 @@ public class ServicioFullCarga implements ServicioConeccion, Job {
 			builderC.append("<referenciaOperacion>" + tx.getNumeroTransaccion() + "</referenciaOperacion>\r");
 			builderC.append("<fechaHoraOperacion>" + Utilitaria.formatFecha(new Date(), "yyyy-MM-dd") + "T"
 					+ Utilitaria.formatFecha(new Date(), "hh:mm:ss") + "</fechaHoraOperacion>\r");
-			builderC.append("<parametrosOperacion>\r");
-			builderC.append("<indice>" + 1 + "</indice>\r");
-			builderC.append("<valor>" + tx.getReferenciaCliente() + "</valor>\r");
-			builderC.append("</parametrosOperacion>\r");
-			builderC.append("<parametrosOperacion>\r");
-			builderC.append("<indice>" + 2 + "</indice>\r");
-			builderC.append("<valor>" + tx.getImporte() + "</valor>\r");
-			builderC.append("</parametrosOperacion>\r");
-			builderC.append("</net:venta>\r");
+					
+			if (getIDProducto(tx.getCodigoProveedorProducto()).compareTo("TVCABL01")== 0)
+			{
+				builderC.append("<parametrosOperacion>\r");
+				builderC.append("<indice>" + 1 + "</indice>\r");
+				builderC.append("<valor>" + tx.getImporte() + "</valor>\r");
+				builderC.append("</parametrosOperacion>\r");
+				builderC.append("<parametrosOperacion>\r");
+				builderC.append("<indice>" + 2 + "</indice>\r");
+				builderC.append("<valor>" + tx.getReferenciaCliente() + "</valor>\r");
+				builderC.append("</parametrosOperacion>\r");
+				builderC.append("</net:venta>\r");	
+			}
+			else
+			{
+				builderC.append("<parametrosOperacion>\r");
+				builderC.append("<indice>" + 1 + "</indice>\r");
+				builderC.append("<valor>" + tx.getReferenciaCliente() + "</valor>\r");
+				builderC.append("</parametrosOperacion>\r");
+				builderC.append("<parametrosOperacion>\r");
+				builderC.append("<indice>" + 2 + "</indice>\r");
+				builderC.append("<valor>" + tx.getImporte() + "</valor>\r");
+				builderC.append("</parametrosOperacion>\r");
+				builderC.append("</net:venta>\r");
+			}
 		}
 		
 		builderC.append("</soapenv:Body>\r");
